@@ -66,7 +66,7 @@ O IFAL Projetos abrange os seguintes processos institucionais:
 - Portal de pagamento de taxas acadêmicas
 - Integração nativa com GitHub/GitLab via API (somente link externo)
 - Aplicativo móvel
-- Integração com sistemas externos (SUAP, MEC)
+- Integração com sistemas do MEC
 
 ### 1.3 Definições, Acrônimos e Abreviações
 
@@ -181,9 +181,9 @@ Os principais atores (Aluno, Orientador, Coordenador e Admin) interagem com a ap
 ```
 Aluno ──────────────┐
 Professor Orientador ┤
-Secretária ──────────┼──► Sistema IFAL Projetos (Web) ──► Banco de Dados
-Coordenador ─────────┤                                └──► Servidor de E-mail
-Admin ───────────────┘
+Coordenador ─────────┼──► Sistema IFAL Projetos (Web) ──► Banco de Dados (PostgreSQL)
+Admin ───────────────┘                                └──► SUAP (Autenticação OAuth2)
+                                                      └──► Servidor de E-mail
 ```
 
 ### 4.2 Principais Funções
@@ -236,7 +236,7 @@ Admin ───────────────┘
 | RNF001 | Desempenho       | O sistema deve responder a 95% das requisições em menos de 3 segundos                             |
 | RNF002 | Disponibilidade  | O sistema deve ter disponibilidade mínima de 99% no horário comercial                             |
 | RNF003 | Segurança        | Todas as comunicações devem ser criptografadas (TLS/HTTPS)                                        |
-| RNF004 | Segurança        | Senhas devem ser armazenadas com hash bcrypt; sessões devem expirar após 30 min de inatividade    |
+| RNF004 | Segurança        | Sessões devem expirar após 30 min de inatividade; autenticação delegada ao SUAP via OAuth2        |
 | RNF005 | Usabilidade      | A interface deve ser acessível em dispositivos desktop e tablets modernos                          |
 | RNF006 | Manutenibilidade | O código deve seguir padrões documentados e ter cobertura de testes ≥ 70%                         |
 | RNF007 | Escalabilidade   | O sistema deve suportar até 2.000 usuários simultâneos sem degradação                             |
@@ -261,7 +261,7 @@ Admin ───────────────┘
 - Definição e aprovação do modelo de dados na fase de Elaboração
 - Integração com SMTP institucional para envio de notificações
 - Contratação ou disponibilização de API de IA para geração de relatórios
-- Definição do modelo de autenticação (SSO institucional ou cadastro próprio)
+- Integração com SUAP para autenticação via OAuth2 (client_id/client_secret registrados)
 
 ### 7.3 Riscos Identificados
 
