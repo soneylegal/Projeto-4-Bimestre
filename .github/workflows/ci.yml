@@ -1,0 +1,30 @@
+name: Integração Contínua (CI) - IFAL Projetos
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  test-backend:
+    name: Build & Test Backend
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Copy env.example to .env
+        run: cp .env.example .env
+
+      - name: Build backend Docker image
+        run: |
+          docker build -t ifal-backend -f backend/backend.Dockerfile backend/
+
+      - name: Run pytest suite
+        run: |
+          docker run --rm ifal-backend pytest
