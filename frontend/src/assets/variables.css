@@ -1,0 +1,51 @@
+:root {
+  /* Color Palette (Deep Ocean & Slate) */
+  --bg-primary: #0b0f19;
+  --bg-secondary: #161d30;
+  --bg-tertiary: #1f2a45;
+  --bg-glass: rgba(22, 29, 48, 0.7);
+  --border-glass: rgba(255, 255, 255, 0.08);
+  
+  /* Brand Colors */
+  --color-primary: #6366f1;       /* Indigo */
+  --color-primary-hover: #4f46e5;
+  --color-secondary: #8b5cf6;     /* Violet */
+  --color-secondary-hover: #7c3aed;
+  --color-accent: #10b981;        /* Emerald */
+  --color-accent-hover: #059669;
+  
+  /* Feedback Colors */
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  --color-danger: #ef4444;
+  --color-info: #3b82f6;
+
+  /* Text Colors */
+  --text-primary: #f3f4f6;
+  --text-secondary: #9ca3af;
+  --text-muted: #6b7280;
+  --text-inverse: #0b0f19;
+  
+  /* Gradients */
+  --gradient-primary: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  --gradient-dark: linear-gradient(180deg, #0b0f19 0%, #161d30 100%);
+  --gradient-glass: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(139, 92, 246, 0.05) 100%);
+
+  /* Typography */
+  --font-sans: 'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.15);
+  --shadow-glass: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+
+  /* Layout & Spacing */
+  --sidebar-width: 260px;
+  --header-height: 70px;
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
