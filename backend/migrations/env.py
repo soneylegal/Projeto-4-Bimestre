@@ -19,7 +19,7 @@ if config.config_file_name is not None:
 # Importa a configuração, Base e models da aplicação
 from app.config import settings
 from app.database import Base
-from app.models import User, RefreshToken, AuthAuditLog
+from app.models import User, RefreshToken, AuthAuditLog, Project, Task, AuditLog
 
 # add your model's MetaData object here
 # for 'autogenerate' support
