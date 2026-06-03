@@ -79,4 +79,4 @@
 
 ---
 
-*Documento vinculado ao [Documento de Visão](./README.md).*
+*Documento vinculado ao [Documento de Visão](./documento_de_visao.md).*

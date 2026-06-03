@@ -1,274 +1,226 @@
-# Documento de Visão
+# 🏫 IFAL Projetos — Gestão de Projetos Acadêmicos
 
-**Projeto:** IFAL Projetos — Gestão de Projetos Acadêmicos
+Este repositório contém a implementação do **IFAL Projetos**, uma plataforma web projetada para centralizar e otimizar a gestão de projetos integradores e Trabalhos de Conclusão de Curso (TCC) no Instituto Federal de Alagoas (IFAL). 
 
-| Campo        | Descrição                                  |
-|--------------|--------------------------------------------|
-| Versão       | 1.0                                        |
-| Data         | Abril de 2026                              |
-| Status       | Em Revisão                                 |
-| Metodologia  | RUP — Fase de Elaboração, Iteração 1       |
+A plataforma oferece acompanhamento em tempo real das etapas de projetos acadêmicos através de quadros Kanban, versionamento de entregas de documentos e relatórios inteligentes.
 
 ---
 
-## Sumário
+## 1. Apresentação do Projeto
 
-- [Documento de Visão](#documento-de-visão)
-  - [Sumário](#sumário)
-  - [1. Introdução](#1-introdução)
-    - [1.1 Propósito](#11-propósito)
-    - [1.2 Escopo](#12-escopo)
-    - [1.3 Definições, Acrônimos e Abreviações](#13-definições-acrônimos-e-abreviações)
-    - [1.4 Visão Geral do Documento](#14-visão-geral-do-documento)
-  - [2. Posicionamento](#2-posicionamento)
-    - [2.1 Oportunidade de Negócio](#21-oportunidade-de-negócio)
-    - [2.2 Declaração do Problema](#22-declaração-do-problema)
-    - [2.3 Declaração de Posição do Produto](#23-declaração-de-posição-do-produto)
-  - [3. Partes Interessadas e Usuários](#3-partes-interessadas-e-usuários)
-    - [3.1 Partes Interessadas (Stakeholders)](#31-partes-interessadas-stakeholders)
-    - [3.2 Perfis de Usuários](#32-perfis-de-usuários)
-      - [3.2.1 Administrador do Sistema](#321-administrador-do-sistema)
-      - [3.2.2 Coordenador de Curso](#322-coordenador-de-curso)
-      - [3.2.3 Professor Orientador](#323-professor-orientador)
-      - [3.2.4 Aluno](#324-aluno)
-  - [4. Visão Geral do Produto](#4-visão-geral-do-produto)
-    - [4.1 Perspectiva do Produto](#41-perspectiva-do-produto)
-    - [4.2 Principais Funções](#42-principais-funções)
-    - [4.3 Suposições e Dependências](#43-suposições-e-dependências)
-  - [5. Requisitos Funcionais](#5-requisitos-funcionais)
-  - [6. Requisitos Não Funcionais](#6-requisitos-não-funcionais)
-  - [7. Restrições, Dependências e Precedências](#7-restrições-dependências-e-precedências)
-    - [7.1 Restrições](#71-restrições)
-    - [7.2 Dependências](#72-dependências)
-    - [7.3 Riscos Identificados](#73-riscos-identificados)
+### 1.1 O Problema e sua Importância
+No ambiente acadêmico, discentes, docentes orientadores e coordenadores frequentemente enfrentam dificuldades de organização e acompanhamento em projetos de longa duração. A ausência de uma ferramenta centralizada resulta em perda de prazos, descentralização das comunicações (e-mails, mensagens, arquivos perdidos) e falta de rastreabilidade histórica sobre a evolução do projeto e os feedbacks do orientador.
+O **IFAL Projetos** resolve esse problema ao consolidar todas as tarefas, entregas de arquivos, links de repositórios Git externos e comunicações em uma única plataforma web integrada ao sistema de autenticação institucional (SUAP).
+
+### 1.2 Escopo do Projeto
+*   **O que está incluído:**
+    *   Autenticação segura via SUAP OAuth2 utilizando fluxo Backend-For-Frontend (BFF).
+    *   Gestão de perfis com permissões específicas (Aluno, Orientador, Coordenador, Administrador).
+    *   Criação e edição de projetos com vinculação de equipes (alunos) e professor orientador.
+    *   Quadro Kanban interativo para gerenciamento de tarefas (A Fazer, Em Progresso, Concluído) com atribuição de responsáveis e prazos.
+    *   Histórico e controle de versões de entregas de arquivos (com limite de 50 MB) e download dos artefatos.
+    *   Vinculação de URL de repositórios Git externos (GitHub, GitLab, etc.).
+    *   Geração automática de relatórios de progresso em Markdown utilizando IA externa.
+*   **O que está excluído (Versão 1.0):**
+    *   Integração direta com APIs do GitHub/GitLab para leitura de commits.
+    *   Sistemas de pagamento de taxas ou bolsas acadêmicas.
+    *   Aplicativo móvel nativo (a interface web é responsiva).
+*   **Limitações conhecidas:**
+    *   A geração de relatórios com IA depende da disponibilidade de API de terceiros (fallback manual incluído).
+    *   O upload de arquivos está limitado a 50 MB por envio.
 
 ---
 
-## 1. Introdução
+## 2. Arquitetura do Sistema e Fluxo de Dados
 
-### 1.1 Propósito
+A aplicação é dividida em três camadas principais: Front-end (Vue.js), Back-end (FastAPI atuando como BFF) e Banco de Dados (PostgreSQL). A autenticação é delegada ao SUAP via OAuth2.
 
-Este documento define a visão de alto nível do **IFAL Projetos**, uma plataforma de gestão de projetos integradores e Trabalhos de Conclusão de Curso (TCC). Descreve os problemas a serem resolvidos, as necessidades das partes interessadas, as características do produto e os requisitos do sistema. Serve como base para alinhar a equipe de desenvolvimento e os stakeholders durante todas as fases do projeto.
+### 2.1 Diagrama de Componentes (Arquitetura)
 
-### 1.2 Escopo
+```mermaid
+graph TD
+    subgraph "Front-end — Vue.js 3 + Vite"
+        A["main.js"] --> B["Vue Router"]
+        B --> C["Auth Guard"]
+        C --> D["App.vue"]
+        D --> E["/login → LoginPage.vue"]
+        D --> F["Rotas Protegidas"]
+        F --> G["/ → DashboardPage.vue"]
+        F --> H["/projects → ProjectsPage.vue"]
+        F --> I["/projects/:id → ProjectDetailPage.vue"]
+        F --> J["/projects/:id/submissions → SubmissionsPage.vue"]
+        G --> K["MainLayout.vue"]
+        H --> K
+        I --> K
+        J --> K
+    end
 
-O IFAL Projetos abrange os seguintes processos institucionais:
+    subgraph "Back-end — FastAPI (BFF)"
+        N["main.py"] --> O["auth router"]
+        N --> P["projects router"]
+        N --> Q["tasks router"]
+        N --> R["submissions router"]
+        N --> S["reports router"]
+        O --> T["SUAP OAuth2 Service"]
+    end
 
-- Criação e gerenciamento de projetos com definição de equipe
-- Controle de tarefas e prazos via quadro Kanban
-- Controle de versões de entregas e documentos
-- Integração com repositórios Git (link de repositórios externos)
-- Geração automática de relatórios de progresso com apoio de IA
-- Controle de acesso baseado em perfis (aluno, orientador, coordenador)
+    subgraph "Banco de Dados — PostgreSQL"
+        V[("users")]
+        W[("projects")]
+        X[("tasks")]
+        Y[("submissions")]
+        Z[("refresh_tokens")]
+        AA[("auth_audit_log")]
+    end
 
-**Fora do escopo (versão 1.0):**
+    SUAP["SUAP OAuth2 API"]
 
-- Portal de pagamento de taxas acadêmicas
-- Integração nativa com GitHub/GitLab via API (somente link externo)
-- Aplicativo móvel
-- Integração com sistemas do MEC
-
-### 1.3 Definições, Acrônimos e Abreviações
-
-| Termo       | Definição                                                                          |
-|-------------|------------------------------------------------------------------------------------|
-| RUP         | Rational Unified Process — metodologia de desenvolvimento de software              |
-| UC          | Use Case (Caso de Uso)                                                             |
-| RF          | Requisito Funcional                                                                |
-| RNF         | Requisito Não Funcional                                                            |
-| TCC         | Trabalho de Conclusão de Curso                                                     |
-| Projeto     | Agrupamento de tarefas, entregas e membros com objetivo acadêmico definido         |
-| Kanban      | Metodologia visual de gestão de tarefas por colunas de status                     |
-| Entrega     | Artefato ou documento submetido por uma equipe em uma etapa do projeto             |
-| Orientador  | Professor responsável por acompanhar e avaliar um projeto                          |
-| IA          | Inteligência Artificial — usada para geração automática de relatórios              |
-| Admin       | Administrador do sistema                                                           |
-
-### 1.4 Visão Geral do Documento
-
-Este documento está organizado nas seguintes seções: posicionamento do produto, partes interessadas, visão geral do produto, requisitos funcionais, requisitos não funcionais e restrições.
-
----
-
-## 2. Posicionamento
-
-### 2.1 Oportunidade de Negócio
-
-Instituições de ensino como o IFAL enfrentam dificuldades no acompanhamento e organização de projetos acadêmicos de longa duração, como projetos integradores e TCCs. A ausência de uma ferramenta centralizada gera desorganização, perda de prazos, dificuldade de comunicação entre alunos e orientadores e baixa rastreabilidade das entregas. Uma plataforma dedicada representa uma oportunidade de elevar a qualidade e a taxa de conclusão desses projetos.
-
-### 2.2 Declaração do Problema
-
-| Elemento                          | Descrição                                                                                                                      |
-|-----------------------------------|--------------------------------------------------------------------------------------------------------------------------------|
-| **O problema de**                 | Falta de organização e acompanhamento estruturado em projetos acadêmicos longos                                               |
-| **Afeta**                         | Alunos, professores orientadores e coordenação de curso                                                                       |
-| **Cujo impacto é**                | Perda de prazos, retrabalho, comunicação descentralizada e dificuldade de avaliação do progresso                              |
-| **Uma solução bem-sucedida seria**| Uma plataforma integrada que centralize a gestão de projetos, tarefas, entregas e relatórios com rastreabilidade completa      |
-
-### 2.3 Declaração de Posição do Produto
-
-| Elemento               | Descrição                                                                                                                                    |
-|------------------------|----------------------------------------------------------------------------------------------------------------------------------------------|
-| **Para**               | Instituições de ensino médio e superior, especialmente o IFAL                                                                               |
-| **Que**                | Necessitam organizar e acompanhar projetos integradores e TCCs de forma centralizada                                                         |
-| **O IFAL Projetos é**  | Uma plataforma web de gestão de projetos acadêmicos                                                                                         |
-| **Que oferece**        | Criação de projetos com equipe, Kanban de tarefas, controle de versões de entregas, integração com Git e geração automática de relatórios com IA |
-| **Diferente de**       | Planilhas, grupos de mensagens e ferramentas genéricas não adaptadas ao contexto acadêmico                                                   |
-| **Nosso produto garante** | Rastreabilidade completa, controle de acesso por perfil e visibilidade do progresso em tempo real                                         |
-
----
-
-## 3. Partes Interessadas e Usuários
-
-### 3.1 Partes Interessadas (Stakeholders)
-
-| Stakeholder              | Papel             | Interesse                                                         |
-|--------------------------|-------------------|-------------------------------------------------------------------|
-| Direção / Reitoria       | Patrocinador      | Melhoria de indicadores acadêmicos e conformidade institucional   |
-| Coordenação de Curso     | Usuário/Aprovador | Acompanhamento dos projetos e gestão de orientadores              |
-| Professores Orientadores | Usuário Principal | Acompanhamento e avaliação dos projetos sob sua responsabilidade  |
-| Alunos                   | Usuário Final     | Gestão de tarefas, envio de entregas e comunicação com orientador |
-| Equipe de TI / IFAL      | Suporte           | Manutenção, segurança e infraestrutura da plataforma              |
-
-### 3.2 Perfis de Usuários
-
-#### 3.2.1 Administrador do Sistema
-
-| Atributo             | Descrição                                               |
-|----------------------|---------------------------------------------------------|
-| Representante        | Equipe de TI do IFAL                                   |
-| Responsabilidade     | Configuração, manutenção e controle de acesso ao sistema |
-| Critério de sucesso  | Sistema estável, com auditoria e backup funcionais      |
-| Nível técnico        | Alto                                                    |
-
-#### 3.2.2 Coordenador de Curso
-
-| Atributo             | Descrição                                                               |
-|----------------------|-------------------------------------------------------------------------|
-| Representante        | Coordenadores de graduação e pós-graduação                             |
-| Responsabilidade     | Supervisão dos projetos, alocação de orientadores e emissão de relatórios |
-| Critério de sucesso  | Visibilidade completa do progresso dos projetos e desempenho das equipes |
-| Nível técnico        | Médio                                                                   |
-
-#### 3.2.3 Professor Orientador
-
-| Atributo             | Descrição                                                               |
-|----------------------|-------------------------------------------------------------------------|
-| Representante        | Docentes com projetos sob orientação                                    |
-| Responsabilidade     | Acompanhamento de tarefas, avaliação de entregas e feedback às equipes  |
-| Critério de sucesso  | Interface simples para revisão de entregas e comunicação com alunos     |
-| Nível técnico        | Baixo a médio                                                           |
-
-#### 3.2.4 Aluno
-
-| Atributo             | Descrição                                                                                    |
-|----------------------|----------------------------------------------------------------------------------------------|
-| Representante        | Discentes matriculados em disciplinas de projeto ou TCC                                      |
-| Responsabilidade     | Criação de tarefas, envio de entregas, vinculação de repositório Git e consulta de feedbacks |
-| Critério de sucesso  | Acesso ágil, visual e intuitivo para gerir as etapas do próprio projeto                      |
-| Nível técnico        | Baixo a médio                                                                                |
-
----
-
-## 4. Visão Geral do Produto
-
-### 4.1 Perspectiva do Produto
-
-O IFAL Projetos é uma aplicação web stand-alone que, na fase inicial, integra-se ao servidor de e-mail institucional para envio de notificações e permite vinculação de repositórios Git externos (GitHub, GitLab) via URL. Futuras versões poderão incluir integração direta com APIs de plataformas de versionamento e sistemas institucionais como o SUAP.
-
-Os principais atores (Aluno, Orientador, Coordenador e Admin) interagem com a aplicação web, que persiste dados em banco relacional e envia notificações via servidor SMTP institucional.
-
-```
-Aluno ──────────────┐
-Professor Orientador ┤
-Coordenador ─────────┼──► Sistema IFAL Projetos (Web) ──► Banco de Dados (PostgreSQL)
-Admin ───────────────┘                                └──► SUAP (Autenticação OAuth2)
-                                                      └──► Servidor de E-mail
+    D -.->|"HTTP /api/* (Com Cookies HttpOnly)"| N
+    T -.->|"Troca de Code e dados"| SUAP
+    N --> V & W & X & Y & Z & AA
 ```
 
-### 4.2 Principais Funções
-
-| ID  | Função                                                                      | Prioridade |
-|-----|-----------------------------------------------------------------------------|------------|
-| F01 | Gestão de projetos (criação, edição, encerramento) com definição de equipe  | Alta       |
-| F02 | Quadro Kanban com tarefas, responsáveis, prazos e status                    | Alta       |
-| F03 | Controle de versões de entregas (upload, histórico, download)               | Alta       |
-| F04 | Vinculação de repositórios Git externos por projeto                         | Alta       |
-| F05 | Controle de acesso baseado em perfis                                        | Alta       |
-| F06 | Geração automática de relatórios de progresso com apoio de IA               | Média      |
-| F07 | Notificações por e-mail em eventos relevantes                               | Baixa      |
-
-### 4.3 Suposições e Dependências
-
-- A instituição dispõe de infraestrutura de servidor web e banco de dados relacional
-- Os usuários possuem acesso à internet e navegador moderno
-- Existe um servidor SMTP institucional para envio de e-mails
-- O sistema operará em ambiente seguro com HTTPS
-- Alunos possuem conta institucional para autenticação
-- A API de IA para geração de relatórios estará disponível na fase de construção
+### 2.2 Camadas da Aplicação e Tecnologias Integradas
+*   **Front-end (Cliente):** Desenvolvido em **Vue.js 3** estruturado com **Vite** para build rápido. O estado global é gerenciado com **Pinia** e a estilização é feita puramente em **Vanilla CSS** modular, garantindo performance e controle estético total sem dependência de Tailwind ou frameworks UI prontos.
+*   **Back-end (Servidor):** Desenvolvido em **FastAPI (Python 3.11)** utilizando operações assíncronas. Ele atua como um **Backend-For-Frontend (BFF)**, intermediando a comunicação com o SUAP e blindando o cliente de chaves e tokens de acesso sensíveis.
+*   **Banco de Dados (Persistência):** Banco de dados relacional **PostgreSQL** orquestrado via Docker. O ORM utilizado é o **SQLAlchemy (async)** e a evolução do esquema é gerenciada por migrações do **Alembic**.
 
 ---
 
-## 5. Requisitos Funcionais
+## 3. Descrição de Dependências
 
-| ID    | Descrição                                                                                                                   | Prioridade | UC Relacionado |
-|-------|-----------------------------------------------------------------------------------------------------------------------------|------------|----------------|
-| RF001 | O sistema deve permitir criar, editar, visualizar e encerrar projetos acadêmicos                                            | Alta       | UC001          |
-| RF002 | O sistema deve permitir definir a equipe de um projeto, incluindo alunos e orientador                                       | Alta       | UC001          |
-| RF003 | O sistema deve oferecer quadro Kanban para criação e gestão de tarefas com responsável e prazo                              | Alta       | UC002          |
-| RF004 | O sistema deve permitir mover tarefas entre colunas de status (A Fazer, Em Andamento, Concluído)                            | Alta       | UC002          |
-| RF005 | O sistema deve permitir o upload de arquivos como entregas versionadas por etapa do projeto                                 | Alta       | UC003          |
-| RF006 | O sistema deve manter histórico de versões das entregas com data, autor e possibilidade de download                         | Alta       | UC003          |
-| RF007 | O sistema deve permitir vincular a URL de um repositório Git externo ao projeto                                             | Alta       | UC004          |
-| RF008 | O sistema deve controlar acesso por perfis: Admin, Coordenador, Orientador e Aluno                                          | Alta       | UC005          |
-| RF009 | O sistema deve registrar log de todas as operações críticas                                                                 | Alta       | UC005          |
-| RF010 | O sistema deve gerar automaticamente relatório de progresso do projeto com apoio de IA                                      | Média      | UC006          |
-| RF011 | O sistema deve permitir ao orientador avaliar e comentar entregas diretamente na plataforma                                 | Média      | UC003          |
-| RF012 | O sistema deve gerar relatório consolidado de projetos por curso para o coordenador                                         | Média      | UC007          |
-| RF013 | O sistema deve enviar notificações por e-mail em eventos como prazo próximo, nova entrega e novo comentário                 | Baixa      | —              |
+### 3.1 Backend
+As dependências do backend são gerenciadas através do padrão modernizado **PEP 621** no arquivo `backend/pyproject.toml`:
+*   `fastapi`: Framework web para criação da API.
+*   `uvicorn[standard]`: Servidor ASGI para rodar a aplicação.
+*   `sqlalchemy[asyncio]`: ORM assíncrono para mapeamento de dados.
+*   `alembic`: Ferramenta de versionamento e migrações do banco.
+*   `asyncpg`: Driver assíncrono para conexão com o PostgreSQL.
+*   `pyjwt[crypto]`: Biblioteca para geração e assinatura do JWT local.
+*   `httpx`: Cliente HTTP assíncrono para realizar requisições ao SUAP.
+*   `pytest` e `pytest-asyncio`: Bibliotecas para testes de integração assíncronos.
 
----
-
-## 6. Requisitos Não Funcionais
-
-| ID     | Categoria        | Descrição                                                                                          |
-|--------|------------------|----------------------------------------------------------------------------------------------------|
-| RNF001 | Desempenho       | O sistema deve responder a 95% das requisições em menos de 3 segundos                             |
-| RNF002 | Disponibilidade  | O sistema deve ter disponibilidade mínima de 99% no horário comercial                             |
-| RNF003 | Segurança        | Todas as comunicações devem ser criptografadas (TLS/HTTPS)                                        |
-| RNF004 | Segurança        | Sessões devem expirar após 30 min de inatividade; autenticação delegada ao SUAP via OAuth2        |
-| RNF005 | Usabilidade      | A interface deve ser acessível em dispositivos desktop e tablets modernos                          |
-| RNF006 | Manutenibilidade | O código deve seguir padrões documentados e ter cobertura de testes ≥ 70%                         |
-| RNF007 | Escalabilidade   | O sistema deve suportar até 2.000 usuários simultâneos sem degradação                             |
-| RNF008 | Auditoria        | O sistema deve registrar data, hora, usuário e ação em todas as operações de escrita              |
-| RNF009 | Armazenamento    | O sistema deve suportar upload de arquivos de até 50 MB por entrega                               |
+### 3.2 Frontend
+As dependências do frontend são definidas em `frontend/package.json`:
+*   `vue`: Framework JavaScript reativo.
+*   `vue-router`: Gerenciamento de rotas e guards de navegação.
+*   `pinia`: Gerenciador de estado global (auth store).
+*   `vite`: Build-tool e servidor de desenvolvimento ágil.
 
 ---
 
-## 7. Restrições, Dependências e Precedências
+## 4. Instruções de Instalação e Setup Local
 
-### 7.1 Restrições
+### 4.1 Pré-requisitos
+Certifique-se de ter instalado em sua máquina:
+*   [Docker](https://docs.docker.com/get-docker/)
+*   [Docker Compose](https://docs.docker.com/compose/install/)
+*   [Git](https://git-scm.com/)
 
-- O sistema deve ser desenvolvido como aplicação web
-- O banco de dados deve ser relacional (PostgreSQL ou MySQL)
-- O sistema deve ser compatível com Chrome, Firefox, Edge e Safari (últimas 2 versões)
-- O prazo para entrega da versão 1.0 é de 6 meses a partir do início da fase de construção
-- A geração de relatórios por IA deve utilizar API externa com contrato de privacidade aprovado pela instituição
+---
 
-### 7.2 Dependências
+### 4.2 Rodando o Projeto via Docker (Método Recomendado)
 
-- Disponibilidade de servidor de banco de dados antes do início do desenvolvimento
-- Definição e aprovação do modelo de dados na fase de Elaboração
-- Integração com SMTP institucional para envio de notificações
-- Contratação ou disponibilização de API de IA para geração de relatórios
-- Integração com SUAP para autenticação via OAuth2 (client_id/client_secret registrados)
+A infraestrutura completa (Banco de Dados, Backend FastAPI e Frontend Vue/Nginx) pode ser instanciada localmente com um único comando:
 
-### 7.3 Riscos Identificados
+1.  **Clonar o Repositório:**
+    ```bash
+    git clone <url-do-repositorio>
+    cd Projeto-4-Bimestre
+    ```
 
-| Risco                                               | Probabilidade | Impacto | Mitigação                                           |
-|-----------------------------------------------------|---------------|---------|-----------------------------------------------------|
-| Mudança de escopo durante o desenvolvimento         | Alta          | Alto    | Controle rígido de mudanças via processo RUP        |
-| Dificuldade de adoção pelos usuários                | Média         | Médio   | Treinamento, tutoriais e manual do usuário          |
-| Indisponibilidade ou custo elevado da API de IA     | Média         | Médio   | Geração de relatório manual como fallback           |
-| Falha de integração com SMTP institucional          | Baixa         | Baixo   | Funcionalidade de e-mail é de baixa prioridade      |
-| Escalabilidade insuficiente com crescimento de projetos | Baixa     | Alto    | Testes de carga na fase de transição                |
+2.  **Configurar Variáveis de Ambiente:**
+    Copie o arquivo de exemplo para a raiz e ajuste os valores se necessário:
+    ```bash
+    cp .env.example .env
+    ```
+    *Nota: O arquivo `.env` contém credenciais de acesso ao PostgreSQL e chaves de integração do SUAP OAuth2.*
+
+3.  **Subir a Aplicação:**
+    ```bash
+    docker compose up --build
+    ```
+
+4.  **Acessar a Aplicação:**
+    Abra seu navegador e acesse:
+    *   **Frontend (Interface):** [http://localhost](http://localhost) (Porta 80 via Nginx)
+    *   **Backend (Swagger/Docs):** [http://localhost:8000/docs](http://localhost:8000/docs) (FastAPI Swagger)
+    *   **Banco de Dados:** Porta `25432` no host local.
+
+---
+
+### 4.3 Rodando Manualmente para Desenvolvimento (Sem Docker)
+
+Se preferir rodar os serviços separadamente para debug ou desenvolvimento local:
+
+#### Backend
+1.  Navegue até a pasta `backend/`:
+    ```bash
+    cd backend
+    ```
+2.  Crie e ative um ambiente virtual Python:
+    ```bash
+    python -m venv venv
+    source venv/bin/activate  # No Windows: venv\Scripts\activate
+    ```
+3.  Instale as dependências:
+    ```bash
+    pip install -e .[test]
+    ```
+4.  Certifique-se de que possui uma instância do PostgreSQL rodando localmente na porta configurada no seu `.env`.
+5.  Execute as migrações do banco com o Alembic:
+    ```bash
+    alembic upgrade head
+    ```
+6.  Inicie o servidor de desenvolvimento:
+    ```bash
+    uvicorn app.main:app --reload
+    ```
+
+#### Frontend
+1.  Navegue até a pasta `frontend/`:
+    ```bash
+    cd ../frontend
+    ```
+2.  Instale as dependências do Node:
+    ```bash
+    npm install
+    ```
+3.  Inicie o servidor de desenvolvimento do Vite com proxy habilitado para o backend:
+    ```bash
+    npm run dev
+    ```
+    *A interface estará disponível na porta `5173`.*
+
+---
+
+## 5. Executando a Suíte de Testes do Backend
+
+Os testes cobrem a integridade dos fluxos de autenticação, geração de sessões locais e auditorias.
+
+Para rodar os testes utilizando o ambiente Docker:
+```bash
+docker compose run --rm backend pytest
+```
+
+Para rodar os testes localmente (com o ambiente virtual ativo no backend):
+```bash
+pytest
+```
+
+---
+
+## 6. Estrutura de Diretórios e Documentação
+
+O repositório segue a estrutura organizacional abaixo:
+*   `/docker` - Arquivos de configuração de imagem do Docker (`backend.Dockerfile`, `frontend.Dockerfile`).
+*   `/docs` - Documentação de engenharia de software e especificações do projeto:
+    *   [Documento de Visão RUP](./docs/documento_de_visao.md) (Casos de uso, requisitos e histórias de usuário).
+    *   [Mini-spec de Autenticação SUAP](./docs/Mini-spec_Login.md) (Detalhes do BFF de Login).
+    *   [Plano de Implementação](./docs/implementation_plan.md) (Roadmap das Fases 0 a 5).
+    *   [Equipe de Desenvolvimento](./docs/equipe.md) (Responsabilidades e Fluxo Git).
+    *   [Relatório de Handover](./docs/session_handover.md) (Resumo de transição técnica).
+*   `/backend` - Código-fonte da API em FastAPI e scripts de migração do banco de dados.
+*   `/frontend` - Código-fonte do cliente em Vue.js 3 e Nginx.
+*   `docker-compose.yml` - Orquestrador de serviços locais.
+*   `criteriodeentrega.txt` - Especificações de avaliação da entrega.

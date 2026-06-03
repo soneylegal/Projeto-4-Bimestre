@@ -23,7 +23,7 @@ jobs:
 
       - name: Build backend Docker image
         run: |
-          docker build -t ifal-backend -f backend/backend.Dockerfile backend/
+          docker build -t ifal-backend -f docker/backend.Dockerfile backend/
 
       - name: Run pytest suite
         run: |

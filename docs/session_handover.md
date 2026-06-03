@@ -105,9 +105,16 @@ Projeto-4-Bimestre/
 │   │   ├── __init__.py
 │   │   ├── conftest.py            # Fixtures de testes assíncronos e DB em memória
 │   │   └── test_auth.py           # Testes automatizados de integração do fluxo auth
-│   ├── alembic.ini                # Configuração do utilitário Alembic
-│   ├── backend.Dockerfile         # Dockerfile otimizado de produção
-│   └── pyproject.toml             # Dependências PEP 621 do Python
+│   └── alembic.ini                # Configuração do utilitário Alembic
+├── docker/
+│   ├── backend.Dockerfile         # Dockerfile do backend
+│   └── frontend.Dockerfile        # Dockerfile do frontend
+├── docs/
+│   ├── Mini-spec_Login.md         # Especificação conceitual detalhada do BFF
+│   ├── documento_de_visao.md      # Documento de Visão RUP
+│   ├── equipe.md                  # Equipe de desenvolvimento
+│   ├── implementation_plan.md     # Documento com o roadmap do projeto
+│   └── session_handover.md        # Este relatório
 ├── frontend/
 │   ├── public/                    # Assets estáticos públicos do frontend
 │   ├── src/
@@ -131,7 +138,6 @@ Projeto-4-Bimestre/
 │   │   │   └── SubmissionsPage.vue # Histórico e uploads de submissões
 │   │   ├── App.vue                # Componente principal do Vue
 │   │   └── main.js                # Inicializador do frontend Vue
-│   ├── frontend.Dockerfile        # Dockerfile do front Vue.js + Nginx
 │   ├── nginx.conf                 # Configuração do Nginx local
 │   ├── package.json               # Dependências do frontend (vue-router, pinia, etc.)
 │   ├── vite.config.js             # Configurações do Vite (Alias e Proxy)
@@ -140,9 +146,7 @@ Projeto-4-Bimestre/
 ├── .env.example                   # Modelo explicativo de ambiente para a equipe
 ├── .gitignore                     # Proteção contra vazamento de credenciais e caches
 ├── docker-compose.yml             # Orquestrador local da infraestrutura
-├── implementation_plan.md         # Documento com o roadmap do projeto
-├── Mini-spec_Login.md             # Especificação conceitual detalhada do BFF
-└── session_handover.md            # Este relatório
+└── README.md                      # Instruções de setup e documentação inicial do projeto
 ```
 
 ---
