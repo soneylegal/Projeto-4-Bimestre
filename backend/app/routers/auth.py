@@ -204,6 +204,15 @@ async def me(current_user: User = Depends(get_current_user)):
     """Retorna dados do usuário atualmente logado."""
     return current_user
 
+@router.get("/users", response_model=list[UserResponse])
+async def list_users(role: str | None = None, db: AsyncSession = Depends(get_db), current_user: User = Depends(get_current_user)):
+    """Retorna a lista de usuários ativos, opcionalmente filtrada por papel (role)."""
+    query = select(User).where(User.is_active == True)
+    if role:
+        query = query.where(User.role == role)
+    result = await db.execute(query)
+    return result.scalars().all()
+
 @router.post("/refresh")
 async def refresh(request: Request, response: Response, db: AsyncSession = Depends(get_db)):
     """Atualiza o access token a partir do refresh token do cookie."""
