@@ -286,6 +286,7 @@ CREATE INDEX idx_auth_audit_created ON auth_audit_log(created_at);
 | `ProjectDetailPage.vue` | Detalhes do projeto + quadro Kanban com três colunas | 🔲 |
 | Quadro Kanban | Colunas A Fazer / Em Progresso / Concluído; movimentação por botão ou drag-and-drop | 🔲 |
 | Controle de acesso por perfil | Middleware FastAPI verifica `user.role`; guards Vue ocultam ações não permitidas | 🔲 |
+| Responsividade das Views | Garantir que o grid principal, a listagem de projetos e o quadro Kanban adaptem-se a telas mobile e tablets | 🔲 |
 
 ---
 
@@ -300,6 +301,8 @@ CREATE INDEX idx_auth_audit_created ON auth_audit_log(created_at);
 | `PATCH /api/submissions/:id/evaluate` | Salva `feedback` textual e muda status para `evaluated`; restrito a `advisor` | 🔲 |
 | `SubmissionsPage.vue` | Lista de entregas + formulário de upload + histórico de versões (substituir casca atual) | 🔲 |
 | Vinculação Git (RF007) | Campo `repository_url` em `projects`; exibido no `ProjectDetailPage.vue` | 🔲 |
+| Hospedagem na AWS | Configurar deploy da aplicação na AWS usando imagens Docker (Backend, Frontend, PostgreSQL) | 🔲 |
+| Guia de Deploy | Escrever instruções detalhadas de deploy e infraestrutura em nuvem na documentação | 🔲 |
 
 ---
 
@@ -320,7 +323,7 @@ CREATE INDEX idx_auth_audit_created ON auth_audit_log(created_at);
 | Tarefa | Descrição | Status |
 |--------|-----------|:------:|
 | Skeleton loaders | Componente `SkeletonCard.vue` para listas em carregamento | 🔲 |
-| Responsividade | Breakpoints em `variables.css`; layout colapsável no mobile < 768px (RNF005) | 🔲 |
+| Responsividade | Polimento e ajustes finos de responsividade geral nas demais views do sistema | 🔲 |
 | Microanimações | `:hover` e `:focus-visible` com `transition` em CSS | 🔲 |
 | SEO | `useHead` por rota com meta `title` e `description` | 🔲 |
 | Relatórios com IA (RF010) | `POST /api/reports/generate` → monta prompt com dados do projeto → chama API externa de LLM → retorna Markdown renderizável | 🔲 |

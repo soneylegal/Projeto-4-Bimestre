@@ -14,8 +14,10 @@ ENV PATH="/opt/venv/bin:$PATH"
 
 # Copia e instala as dependências definidas no pyproject.toml
 COPY pyproject.toml .
+RUN touch README.md && mkdir app && touch app/__init__.py
 RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir .[test]
+    pip install --no-cache-dir .[test] && \
+    pip uninstall -y ifal-projetos-backend
 
 # Stage 2: Runtime
 FROM python:3.11-slim AS runtime
