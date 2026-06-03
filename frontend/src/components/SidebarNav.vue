@@ -69,7 +69,7 @@ const isActive = (path) => {
 
     <div class="sidebar-footer">
       <div class="user-role-badge" :class="userRole">
-        {{ userRole === 'admin' ? 'Administrador' : userRole === 'advisor' ? 'Orientador' : 'Estudante' }}
+        {{ userRole === 'admin' ? 'Administrador' : userRole === 'coordinator' ? 'Coordenador' : userRole === 'advisor' ? 'Orientador' : 'Estudante' }}
       </div>
     </div>
   </aside>
@@ -187,6 +187,12 @@ const isActive = (path) => {
   background: rgba(16, 185, 129, 0.1);
   color: var(--color-success);
   border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.user-role-badge.coordinator {
+  background: rgba(139, 92, 246, 0.1);
+  color: var(--color-secondary);
+  border: 1px solid rgba(139, 92, 246, 0.2);
 }
 
 .user-role-badge.admin {

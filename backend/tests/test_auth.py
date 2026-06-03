@@ -116,3 +116,23 @@ async def test_token_refresh(client, db_session):
     # Confirma que o novo refresh token está no banco
     result_rt = await db_session.execute(select(RefreshToken).where(RefreshToken.token == new_rt))
     assert result_rt.scalars().first() is not None
+
+@pytest.mark.asyncio
+async def test_users_endpoint_unauthorized(client):
+    """Testa se a rota /users retorna 401 para usuário não autenticado."""
+    response = await client.get("/api/auth/users")
+    assert response.status_code == 401
+
+@pytest.mark.asyncio
+async def test_users_endpoint_authorized(client, db_session):
+    """Testa se a rota /users lista os usuários ativos."""
+    # 1. Faz login do estudante
+    login_resp = await client.get("/api/auth/callback?code=mock_code_student", follow_redirects=False)
+    client.cookies.update(login_resp.cookies)
+    
+    # 2. Busca lista de usuários
+    response = await client.get("/api/auth/users?role=student")
+    assert response.status_code == 200
+    data = response.json()
+    assert len(data) >= 1
+    assert data[0]["role"] == "student"
