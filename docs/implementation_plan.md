@@ -290,19 +290,19 @@ CREATE INDEX idx_auth_audit_created ON auth_audit_log(created_at);
 
 ---
 
-### 🔲 Fase 3 — Entregas e Submissões (RF005, RF006, RF011)
+### ✅ Fase 3 — Entregas e Submissões (RF005, RF006, RF011) *(Concluída)*
 
 | Tarefa | Descrição | Status |
 |--------|-----------|:------:|
-| Model + migration `submissions` | Campos: `project_id`, `version` (auto-incremental), `file_path`, `uploader_id`, `feedback`, `status` (`pending` / `evaluated`) | 🔲 |
-| `POST /api/submissions` | Upload de arquivo (limite 50 MB — RNF009) + gera versão incremental | 🔲 |
-| `GET /api/submissions/:project_id` | Lista histórico de versões com data, autor e número de versão | 🔲 |
-| `GET /api/submissions/:id/download` | Serve o arquivo para download | 🔲 |
-| `PATCH /api/submissions/:id/evaluate` | Salva `feedback` textual e muda status para `evaluated`; restrito a `advisor` | 🔲 |
-| `SubmissionsPage.vue` | Lista de entregas + formulário de upload + histórico de versões (substituir casca atual) | 🔲 |
-| Vinculação Git (RF007) | Campo `repository_url` em `projects`; exibido no `ProjectDetailPage.vue` | 🔲 |
-| Hospedagem na AWS | Configurar deploy da aplicação na AWS usando imagens Docker (Backend, Frontend, PostgreSQL) | ✅ |
-| Guia de Deploy | Escrever instruções detalhadas de deploy e infraestrutura em nuvem na documentação | ✅ |
+| Model + migration `submissions` | Campos: `project_id`, `version` (auto-incremental), `file_path`, `uploader_id`, `feedback`, `status` (`pending` / `evaluated`) | ✅ |
+| `POST /api/submissions` | Upload de arquivo (limite 50 MB — RNF009) + gera versão incremental | ✅ |
+| `GET /api/submissions/:project_id` | Lista histórico de versões com data, autor e número de versão | ✅ |
+| `GET /api/submissions/:id/download` | Serve o arquivo para download | ✅ |
+| `PATCH /api/submissions/:id/evaluate` | Salva `feedback` textual e muda status para `evaluated`; restrito a `advisor` | ✅ |
+| `SubmissionsPage.vue` | Lista de entregas + formulário de upload + histórico de versões (substituir casca atual) | ✅ |
+| Vinculação Git (RF007) | Campo `repository_url` em `projects`; exibido no `ProjectDetailPage.vue` | ✅ |
+| Hospedagem (Render) | Deploy gratuito com Blueprint (`render.yaml`) — substituiu AWS | ✅ |
+| Guia de Deploy | Documentação completa em `docs/render_deployment_guide.md` | ✅ |
 
 ---
 
