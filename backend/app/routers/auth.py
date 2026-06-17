@@ -26,11 +26,12 @@ from ..auth_utils import (
 router = APIRouter(prefix="/api/auth", tags=["auth"])
 
 @router.get("/authorize")
-async def authorize():
+async def authorize(role: Optional[str] = None):
     """Redireciona o usuário para a página de autorização do SUAP."""
     # Em modo mock (demo/apresentação), pula o SUAP e vai direto pro callback
     if settings.SUAP_CLIENT_ID == "mock_client_id":
-        mock_callback_url = f"{settings.SUAP_REDIRECT_URI}?code=mock_code_advisor"
+        target_role = role if role in ["student", "advisor", "coordinator", "admin"] else "advisor"
+        mock_callback_url = f"{settings.SUAP_REDIRECT_URI}?code=mock_code_{target_role}"
         return RedirectResponse(url=mock_callback_url)
     
     authorize_url = (
@@ -55,10 +56,34 @@ async def callback(request: Request, response: Response, code: str, db: AsyncSes
     suap_user_data = None
     if is_mock:
         # Mock de dados do SUAP para facilitar testes locais e automatizados
-        mock_id = "12345" if "student" in code else "54321"
-        mock_name = "Aluno de Teste" if "student" in code else "Professor Orientador"
-        mock_email = "aluno.teste@ifal.edu.br" if "student" in code else "orientador.teste@ifal.edu.br"
-        mock_role = "student" if "student" in code else "advisor"
+        mock_role = "advisor"
+        if "student" in code:
+            mock_role = "student"
+        elif "coordinator" in code:
+            mock_role = "coordinator"
+        elif "admin" in code:
+            mock_role = "admin"
+
+        mock_id = {
+            "student": "12345",
+            "advisor": "54321",
+            "coordinator": "99999",
+            "admin": "88888"
+        }[mock_role]
+
+        mock_name = {
+            "student": "Aluno de Teste",
+            "advisor": "Professor Orientador",
+            "coordinator": "Coordenador Geral",
+            "admin": "Administrador do Sistema"
+        }[mock_role]
+
+        mock_email = {
+            "student": "aluno.teste@ifal.edu.br",
+            "advisor": "orientador.teste@ifal.edu.br",
+            "coordinator": "coordenador.teste@ifal.edu.br",
+            "admin": "admin.teste@ifal.edu.br"
+        }[mock_role]
         
         suap_user_data = {
             "suap_id": mock_id,

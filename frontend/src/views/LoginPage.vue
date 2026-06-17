@@ -1,10 +1,20 @@
 <script setup>
+import { ref } from 'vue'
 import { useAuthStore } from '../store/auth'
 
 const authStore = useAuthStore()
 
+const selectedRole = ref('advisor')
+
+const roles = [
+  { value: 'student', label: 'Aluno (Estudante)', icon: '👨‍🎓' },
+  { value: 'advisor', label: 'Orientador (Professor)', icon: '👨‍🏫' },
+  { value: 'coordinator', label: 'Coordenador', icon: '💼' },
+  { value: 'admin', label: 'Administrador', icon: '🛠️' }
+]
+
 const handleLogin = () => {
-  authStore.login()
+  authStore.login(selectedRole.value)
 }
 </script>
 
@@ -27,9 +37,26 @@ const handleLogin = () => {
 
       <div class="info-section">
         <p class="info-text">
-          Acesse a plataforma utilizando suas credenciais institucionais do SUAP. 
-          Alunos, orientadores e administradores têm acesso unificado.
+          Acesse a plataforma utilizando suas credenciais institucionais do SUAP.
         </p>
+      </div>
+
+      <!-- Seletor de Perfil no Modo Demo -->
+      <div class="role-selector-wrapper">
+        <label class="role-selector-label">Selecione o perfil de acesso (Modo Demo)</label>
+        <div class="role-options">
+          <button 
+            v-for="opt in roles" 
+            :key="opt.value" 
+            type="button" 
+            class="role-opt-btn"
+            :class="{ active: selectedRole === opt.value }"
+            @click="selectedRole = opt.value"
+          >
+            <span class="role-opt-icon">{{ opt.icon }}</span>
+            <span class="role-opt-title">{{ opt.label }}</span>
+          </button>
+        </div>
       </div>
 
       <button class="btn btn-primary login-btn" @click="handleLogin">
@@ -181,5 +208,65 @@ const handleLogin = () => {
 
 .footer-link:hover {
   color: var(--color-primary);
+}
+
+/* Estilos do Seletor de Perfil */
+.role-selector-wrapper {
+  width: 100%;
+  margin-bottom: 2rem;
+  text-align: left;
+}
+
+.role-selector-label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 0.75rem;
+  letter-spacing: 0.05em;
+  text-align: center;
+}
+
+.role-options {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+}
+
+.role-opt-btn {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-md);
+  padding: 0.75rem;
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  transition: var(--transition-fast);
+}
+
+.role-opt-btn:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-1px);
+}
+
+.role-opt-btn.active {
+  background: rgba(99, 102, 241, 0.1);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.15);
+}
+
+.role-opt-icon {
+  font-size: 1.25rem;
+}
+
+.role-opt-title {
+  font-size: 0.8rem;
+  font-weight: 600;
 }
 </style>

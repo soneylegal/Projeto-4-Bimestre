@@ -58,9 +58,9 @@ export const useAuthStore = defineStore('auth', {
       }
     },
     
-    login() {
+    login(role = 'advisor') {
       // Direct redirection to the FastAPI authorize endpoint
-      window.location.href = apiUrl('/api/auth/authorize')
+      window.location.href = apiUrl(`/api/auth/authorize?role=${role}`)
     },
     
     clearAuth() {
