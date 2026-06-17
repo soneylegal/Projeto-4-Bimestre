@@ -3,10 +3,12 @@ import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useAuthStore } from '../store/auth'
 import { apiFetch } from '@/utils/api'
+import { useNotificationStore } from '../store/notifications'
 
 const route = useRoute()
 const router = useRouter()
 const authStore = useAuthStore()
+const notificationStore = useNotificationStore()
 
 const projectId = computed(() => route.params.id)
 const project = ref(null)
@@ -50,12 +52,15 @@ const fetchProjectDetails = async () => {
       await fetchTasks()
     } else if (response.status === 404) {
       errorMsg.value = 'Projeto não encontrado.'
+      notificationStore.add('Projeto não encontrado.', 'error')
     } else {
       errorMsg.value = 'Falha ao carregar detalhes do projeto.'
+      notificationStore.add('Falha ao carregar detalhes do projeto.', 'error')
     }
   } catch (error) {
     console.error(error)
     errorMsg.value = 'Erro de rede ao buscar projeto.'
+    notificationStore.add('Erro de rede ao carregar o projeto.', 'error')
   } finally {
     loading.value = false
   }
@@ -108,12 +113,14 @@ const moveTask = async (task, newStatus) => {
       body: JSON.stringify({ status: newStatus })
     })
     if (response.ok) {
+      notificationStore.add('Status da tarefa atualizado com sucesso!', 'success')
       await fetchTasks()
     } else {
-      alert('Falha ao mover tarefa.')
+      notificationStore.add('Falha ao mover tarefa.', 'error')
     }
   } catch (error) {
     console.error('Erro ao atualizar status da tarefa:', error)
+    notificationStore.add('Erro ao atualizar status da tarefa.', 'error')
   }
 }
 
@@ -192,14 +199,17 @@ const handleSaveTask = async () => {
 
     if (response.ok) {
       showTaskModal.value = false
+      notificationStore.add(isEditingTask.value ? 'Tarefa atualizada com sucesso!' : 'Tarefa criada com sucesso!', 'success')
       await fetchTasks()
     } else {
       const data = await response.json()
       taskFormError.value = data.detail || 'Ocorreu um erro ao salvar a tarefa.'
+      notificationStore.add(taskFormError.value, 'error')
     }
   } catch (error) {
     console.error(error)
     taskFormError.value = 'Erro ao conectar ao servidor.'
+    notificationStore.add('Erro ao conectar ao servidor.', 'error')
   } finally {
     taskSubmitting.value = false
   }
@@ -215,12 +225,14 @@ const handleDeleteTask = async (taskId) => {
       }
     })
     if (response.ok) {
+      notificationStore.add('Tarefa excluída com sucesso!', 'success')
       await fetchTasks()
     } else {
-      alert('Falha ao excluir tarefa.')
+      notificationStore.add('Falha ao excluir tarefa.', 'error')
     }
   } catch (error) {
     console.error('Erro ao excluir tarefa:', error)
+    notificationStore.add('Erro ao excluir tarefa.', 'error')
   }
 }
 
@@ -280,6 +292,15 @@ onMounted(() => {
             <span class="meta-label">Integrantes Alunos</span>
             <span class="meta-value">{{ project.members.length }} cadastrados</span>
           </div>
+        </div>
+
+        <div class="project-actions-row">
+          <router-link :to="`/projects/${projectId}/submissions`" class="btn btn-primary submissions-action-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="btn-icon">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            Entregas e Submissões
+          </router-link>
         </div>
       </div>
 
@@ -718,6 +739,22 @@ onMounted(() => {
   font-weight: 600;
   color: var(--text-primary);
   margin-top: 0.25rem;
+}
+
+.project-actions-row {
+  display: flex;
+  gap: 0.75rem;
+  border-top: 1px solid var(--border-glass);
+  padding-top: 1.25rem;
+  margin-top: 0.5rem;
+}
+
+.submissions-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.25rem;
+  font-size: 0.875rem;
 }
 
 .details-grid {

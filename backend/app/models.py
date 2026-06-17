@@ -1,6 +1,6 @@
 import uuid
 from datetime import datetime
-from sqlalchemy import Column, String, Boolean, DateTime, ForeignKey, Integer, JSON, Table
+from sqlalchemy import Column, String, Boolean, DateTime, ForeignKey, Integer, JSON, Table, Text
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 from .database import Base
@@ -69,6 +69,7 @@ class Project(Base):
     advisor = relationship("User", foreign_keys=[advisor_id], backref="advised_projects")
     members = relationship("User", secondary=project_members, backref="projects")
     tasks = relationship("Task", back_populates="project", cascade="all, delete-orphan")
+    submissions = relationship("Submission", back_populates="project", cascade="all, delete-orphan", order_by="Submission.version")
 
 class Task(Base):
     __tablename__ = "tasks"
@@ -86,6 +87,25 @@ class Task(Base):
     # Relacionamentos
     project = relationship("Project", back_populates="tasks")
     assignee = relationship("User", foreign_keys=[assigned_to], backref="assigned_tasks")
+
+class Submission(Base):
+    __tablename__ = "submissions"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    project_id = Column(UUID(as_uuid=True), ForeignKey("projects.id", ondelete="CASCADE"), nullable=False, index=True)
+    version = Column(Integer, nullable=False)
+    file_path = Column(String(1000), nullable=False)
+    filename = Column(String(255), nullable=False)
+    original_filename = Column(String(500), nullable=True)
+    uploader_id = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="SET NULL"), nullable=True, index=True)
+    task_title = Column(String(255), nullable=True)
+    feedback = Column(Text, nullable=True)
+    status = Column(String(20), nullable=False, default="pending")  # 'pending', 'evaluated'
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    # Relacionamentos
+    project = relationship("Project", back_populates="submissions")
+    uploader = relationship("User", foreign_keys=[uploader_id], backref="submissions")
 
 class AuditLog(Base):
     __tablename__ = "audit_logs"

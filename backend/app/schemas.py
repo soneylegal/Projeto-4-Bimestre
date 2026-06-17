@@ -82,3 +82,28 @@ class ProjectResponse(ProjectBase):
 
     class Config:
         from_attributes = True
+
+# ── Submissions ──────────────────────────────────────────────────────────────
+
+class SubmissionResponse(BaseModel):
+    id: UUID
+    project_id: UUID
+    version: int
+    file_path: str
+    filename: str
+    original_filename: Optional[str] = None
+    uploader_id: Optional[UUID] = None
+    uploader: Optional[UserResponse] = None
+    task_title: Optional[str] = None
+    feedback: Optional[str] = None
+    status: Literal['pending', 'evaluated']
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+
+class EvaluateRequest(BaseModel):
+    feedback: str
+
+class SubmissionEvaluate(BaseModel):
+    feedback: str
