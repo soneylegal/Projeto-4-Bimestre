@@ -14,10 +14,9 @@ ENV PATH="/opt/venv/bin:$PATH"
 
 # Copia e instala as dependências definidas no pyproject.toml
 COPY pyproject.toml .
-RUN touch README.md && mkdir app && touch app/__init__.py
 RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir .[test] && \
-    pip uninstall -y ifal-projetos-backend
+    python -c "import tomllib; p = tomllib.load(open('pyproject.toml', 'rb')); print('\n'.join(p.get('project', {}).get('dependencies', []) + p.get('project', {}).get('optional-dependencies', {}).get('test', [])))" > requirements.txt && \
+    pip install --no-cache-dir -r requirements.txt
 
 # Stage 2: Runtime
 FROM python:3.11-slim AS runtime
@@ -35,7 +34,10 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 # Copia o código-fonte da aplicação
 COPY app ./app
 COPY tests ./tests
+COPY alembic.ini ./alembic.ini
+COPY migrations ./migrations
 
 EXPOSE 8000
 
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}
+

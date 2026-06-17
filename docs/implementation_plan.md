@@ -301,8 +301,8 @@ CREATE INDEX idx_auth_audit_created ON auth_audit_log(created_at);
 | `PATCH /api/submissions/:id/evaluate` | Salva `feedback` textual e muda status para `evaluated`; restrito a `advisor` | 🔲 |
 | `SubmissionsPage.vue` | Lista de entregas + formulário de upload + histórico de versões (substituir casca atual) | 🔲 |
 | Vinculação Git (RF007) | Campo `repository_url` em `projects`; exibido no `ProjectDetailPage.vue` | 🔲 |
-| Hospedagem na AWS | Configurar deploy da aplicação na AWS usando imagens Docker (Backend, Frontend, PostgreSQL) | 🔲 |
-| Guia de Deploy | Escrever instruções detalhadas de deploy e infraestrutura em nuvem na documentação | 🔲 |
+| Hospedagem na AWS | Configurar deploy da aplicação na AWS usando imagens Docker (Backend, Frontend, PostgreSQL) | ✅ |
+| Guia de Deploy | Escrever instruções detalhadas de deploy e infraestrutura em nuvem na documentação | ✅ |
 
 ---
 

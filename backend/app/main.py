@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from .database import engine, Base
 from .routers import auth, projects, tasks
+from .config import settings
 
 app = FastAPI(
     title="IFAL Projetos API",
@@ -9,10 +10,10 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# Configuração de CORS para desenvolvimento local
+# Configuração de CORS parametrizável para desenvolvimento e produção
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://localhost:3000", "http://localhost"],
+    allow_origins=settings.CORS_ALLOWED_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

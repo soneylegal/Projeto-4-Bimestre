@@ -4,6 +4,13 @@ from sqlalchemy.orm import declarative_base
 
 DATABASE_URL = os.getenv("DATABASE_URL", "postgresql+asyncpg://ifal_user:ifal_password@localhost:5432/ifal_projetos")
 
+# Render fornece DATABASE_URL com prefixo 'postgres://' ou 'postgresql://'.
+# SQLAlchemy assíncrono requer o dialeto 'postgresql+asyncpg://'.
+if DATABASE_URL.startswith("postgres://"):
+    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql+asyncpg://", 1)
+elif DATABASE_URL.startswith("postgresql://"):
+    DATABASE_URL = DATABASE_URL.replace("postgresql://", "postgresql+asyncpg://", 1)
+
 # Cria o engine assíncrono para PostgreSQL
 engine = create_async_engine(DATABASE_URL, echo=True)
 
