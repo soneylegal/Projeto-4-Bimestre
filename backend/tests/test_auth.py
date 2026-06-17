@@ -4,12 +4,15 @@ from app.models import User, RefreshToken, AuthAuditLog
 
 @pytest.mark.asyncio
 async def test_authorize_redirect(client):
-    """Testa se a rota authorize redireciona corretamente para o SUAP."""
+    """Testa se a rota authorize redireciona corretamente.
+    Em modo mock (SUAP_CLIENT_ID == 'mock_client_id'), redireciona direto pro callback.
+    """
     response = await client.get("/api/auth/authorize", follow_redirects=False)
     assert response.status_code == 307
     location = response.headers.get("location")
-    assert "suap.ifal.edu.br" in location
-    assert "response_type=code" in location
+    # Em modo mock, redireciona direto para o callback com código mock
+    assert "/api/auth/callback" in location
+    assert "code=mock_code_" in location
 
 @pytest.mark.asyncio
 async def test_callback_mock_login_student(client, db_session):

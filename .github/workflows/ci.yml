@@ -2,7 +2,7 @@ name: Integração Contínua (CI) - IFAL Projetos
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [ main, master, feature/fase3-submissions ]
   pull_request:
     branches: [ main, master ]
 

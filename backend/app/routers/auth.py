@@ -1,3 +1,4 @@
+import os
 import httpx
 import uuid
 from datetime import datetime, timedelta
@@ -7,6 +8,11 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
 from ..config import settings
+
+# URL do frontend para redirecionamento pós-login (produção na Render usa domínio separado)
+FRONTEND_URL = os.getenv("FRONTEND_URL", "")
+# Detecta se está em produção (HTTPS) para configurar cookies seguros
+IS_PRODUCTION = os.getenv("RENDER", "") == "true" or FRONTEND_URL.startswith("https")
 from ..database import get_db
 from ..models import User, RefreshToken
 from ..schemas import UserResponse
@@ -22,6 +28,11 @@ router = APIRouter(prefix="/api/auth", tags=["auth"])
 @router.get("/authorize")
 async def authorize():
     """Redireciona o usuário para a página de autorização do SUAP."""
+    # Em modo mock (demo/apresentação), pula o SUAP e vai direto pro callback
+    if settings.SUAP_CLIENT_ID == "mock_client_id":
+        mock_callback_url = f"{settings.SUAP_REDIRECT_URI}?code=mock_code_advisor"
+        return RedirectResponse(url=mock_callback_url)
+    
     authorize_url = (
         f"{settings.SUAP_AUTHORIZE_URL}?"
         f"response_type=code&"
@@ -146,9 +157,15 @@ async def callback(request: Request, response: Response, code: str, db: AsyncSes
     )
 
     # 6. Cria resposta de redirecionamento para o frontend (BFF Cookie setting)
-    # Em produção redireciona para a raiz /, em dev pode usar outra URL configurável
-    fe_redirect_url = "/"
+    # Em produção (Render), redireciona para a URL do frontend (domínio separado)
+    # Em dev local, redireciona para "/" (mesmo domínio via proxy do Vite)
+    fe_redirect_url = FRONTEND_URL if FRONTEND_URL else "/"
     redirect_response = RedirectResponse(url=fe_redirect_url)
+    
+    # Em produção (HTTPS/Render), cookies precisam de secure=True e samesite="none"
+    # para funcionar cross-origin entre frontend e backend em domínios diferentes
+    cookie_secure = IS_PRODUCTION
+    cookie_samesite = "none" if IS_PRODUCTION else "lax"
     
     # Define cookies httpOnly com tempo de vida correspondente
     redirect_response.set_cookie(
@@ -157,8 +174,8 @@ async def callback(request: Request, response: Response, code: str, db: AsyncSes
         httponly=True,
         max_age=15 * 60,  # 15 min
         expires=15 * 60,
-        samesite="lax",
-        secure=False  # Para dev local sem HTTPS
+        samesite=cookie_samesite,
+        secure=cookie_secure
     )
     redirect_response.set_cookie(
         key="refresh_token",
@@ -166,8 +183,8 @@ async def callback(request: Request, response: Response, code: str, db: AsyncSes
         httponly=True,
         max_age=30 * 60,  # 30 min
         expires=30 * 60,
-        samesite="lax",
-        secure=False
+        samesite=cookie_samesite,
+        secure=cookie_secure
     )
 
     return redirect_response
@@ -254,6 +271,9 @@ async def refresh(request: Request, response: Response, db: AsyncSession = Depen
         request=request
     )
 
+    cookie_secure = IS_PRODUCTION
+    cookie_samesite = "none" if IS_PRODUCTION else "lax"
+    
     res = JSONResponse(content={"message": "Token renovado."})
     res.set_cookie(
         key="access_token",
@@ -261,8 +281,8 @@ async def refresh(request: Request, response: Response, db: AsyncSession = Depen
         httponly=True,
         max_age=15 * 60,
         expires=15 * 60,
-        samesite="lax",
-        secure=False
+        samesite=cookie_samesite,
+        secure=cookie_secure
     )
     res.set_cookie(
         key="refresh_token",
@@ -270,7 +290,7 @@ async def refresh(request: Request, response: Response, db: AsyncSession = Depen
         httponly=True,
         max_age=30 * 60,
         expires=30 * 60,
-        samesite="lax",
-        secure=False
+        samesite=cookie_samesite,
+        secure=cookie_secure
     )
     return res

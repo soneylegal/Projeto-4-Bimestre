@@ -2,6 +2,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useAuthStore } from '../store/auth'
+import { apiFetch } from '@/utils/api'
 
 const route = useRoute()
 const router = useRouter()
@@ -37,7 +38,7 @@ const fetchProjectDetails = async () => {
   loading.value = true
   errorMsg.value = ''
   try {
-    const response = await fetch(`/api/projects/${projectId.value}`, {
+    const response = await apiFetch(`/api/projects/${projectId.value}`, {
       method: 'GET',
       headers: {
         'Accept': 'application/json',
@@ -62,7 +63,7 @@ const fetchProjectDetails = async () => {
 
 const fetchTasks = async () => {
   try {
-    const response = await fetch(`/api/tasks?project_id=${projectId.value}`, {
+    const response = await apiFetch(`/api/tasks?project_id=${projectId.value}`, {
       method: 'GET',
       headers: {
         'Accept': 'application/json',
@@ -98,7 +99,7 @@ const formatDate = (dateStr) => {
 // Task Status Transitions
 const moveTask = async (task, newStatus) => {
   try {
-    const response = await fetch(`/api/tasks/${task.id}/status`, {
+    const response = await apiFetch(`/api/tasks/${task.id}/status`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
@@ -169,7 +170,7 @@ const handleSaveTask = async () => {
     if (isEditingTask.value) {
       // For editing task, we must pass status as well
       payload.status = taskFormStatus.value
-      response = await fetch(`/api/tasks/${editingTaskId.value}`, {
+      response = await apiFetch(`/api/tasks/${editingTaskId.value}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -179,7 +180,7 @@ const handleSaveTask = async () => {
       })
     } else {
       // For creating task, project_id is passed as query param
-      response = await fetch(`/api/tasks?project_id=${projectId.value}`, {
+      response = await apiFetch(`/api/tasks?project_id=${projectId.value}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -207,7 +208,7 @@ const handleSaveTask = async () => {
 const handleDeleteTask = async (taskId) => {
   if (!confirm('Deseja realmente excluir esta tarefa?')) return
   try {
-    const response = await fetch(`/api/tasks/${taskId}`, {
+    const response = await apiFetch(`/api/tasks/${taskId}`, {
       method: 'DELETE',
       headers: {
         'Accept': 'application/json',

@@ -218,9 +218,51 @@ O repositório segue a estrutura organizacional abaixo:
     *   [Documento de Visão RUP](./docs/documento_de_visao.md) (Casos de uso, requisitos e histórias de usuário).
     *   [Mini-spec de Autenticação SUAP](./docs/Mini-spec_Login.md) (Detalhes do BFF de Login).
     *   [Plano de Implementação](./docs/implementation_plan.md) (Roadmap das Fases 0 a 5).
+    *   [Guia de Deploy na Render](./docs/render_deployment_guide.md) (Deploy gratuito — Recomendado).
+    *   [Guia de Deploy na AWS](./docs/aws_deployment_guide.md) (Deploy avançado em nuvem).
     *   [Equipe de Desenvolvimento](./docs/equipe.md) (Responsabilidades e Fluxo Git).
     *   [Relatório de Handover](./docs/session_handover.md) (Resumo de transição técnica).
 *   `/backend` - Código-fonte da API em FastAPI e scripts de migração do banco de dados.
 *   `/frontend` - Código-fonte do cliente em Vue.js 3 e Nginx.
+*   `render.yaml` - Blueprint de infraestrutura para deploy automático na Render.
 *   `docker-compose.yml` - Orquestrador de serviços locais.
 *   `criteriodeentrega.txt` - Especificações de avaliação da entrega.
+
+---
+
+## 7. Deploy em Produção
+
+### 7.1 Render (Recomendado — Gratuito)
+
+A forma mais rápida de colocar o projeto em produção é utilizando a plataforma [Render](https://render.com), que oferece **plano gratuito** com **HTTPS automático**.
+
+O repositório já contém um arquivo [`render.yaml`](./render.yaml) que provisiona toda a infraestrutura com um clique:
+
+1.  Acesse o [Dashboard do Render](https://dashboard.render.com) e crie uma conta.
+2.  Vá em **Blueprints** > **New Blueprint Instance**.
+3.  Conecte o repositório e o Render criará automaticamente:
+    *   🗄️ **PostgreSQL** (banco de dados gerenciado)
+    *   ⚙️ **Web Service** (backend FastAPI via Docker)
+    *   🌐 **Static Site** (frontend Vue.js)
+4.  Configure as variáveis de ambiente manuais (SUAP OAuth2, CORS, URL da API).
+5.  Execute as migrações: `alembic upgrade head` via Shell do Render.
+
+📖 **Guia completo passo-a-passo:** [docs/render_deployment_guide.md](./docs/render_deployment_guide.md)
+
+### 7.2 AWS (Avançado)
+
+Para ambientes corporativos ou com requisitos de alta disponibilidade, consulte o guia de deploy na AWS que cobre EC2 + Docker Compose (rápido) e ECS + RDS + ECR (escalável).
+
+📖 **Guia completo:** [docs/aws_deployment_guide.md](./docs/aws_deployment_guide.md)
+
+### 7.3 Comparativo Rápido
+
+| Critério | Render (Free) | AWS EC2 | AWS ECS + RDS |
+|----------|:------------:|:-------:|:------------:|
+| **Custo** | Gratuito | ~$15/mês | ~$50+/mês |
+| **HTTPS/SSL** | Automático | Manual (Let's Encrypt) | ACM (gratuito) |
+| **Complexidade** | ⭐ Baixa | ⭐⭐ Média | ⭐⭐⭐ Alta |
+| **Escalabilidade** | Limitada | Manual | Auto-scaling |
+| **Deploy Contínuo** | Automático (push) | Manual | CI/CD customizado |
+| **Ideal para** | MVP / Acadêmico | Startups | Produção corporativa |
+

@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import { apiFetch, apiUrl } from '@/utils/api'
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
@@ -11,7 +12,7 @@ export const useAuthStore = defineStore('auth', {
     async fetchUser() {
       this.loading = true
       try {
-        const response = await fetch('/api/auth/me', {
+        const response = await apiFetch('/api/auth/me', {
           method: 'GET',
           headers: {
             'Accept': 'application/json',
@@ -37,7 +38,7 @@ export const useAuthStore = defineStore('auth', {
     async logout() {
       this.loading = true
       try {
-        const response = await fetch('/api/auth/logout', {
+        const response = await apiFetch('/api/auth/logout', {
           method: 'POST',
           headers: {
             'Accept': 'application/json',
@@ -59,7 +60,7 @@ export const useAuthStore = defineStore('auth', {
     
     login() {
       // Direct redirection to the FastAPI authorize endpoint
-      window.location.href = '/api/auth/authorize'
+      window.location.href = apiUrl('/api/auth/authorize')
     },
     
     clearAuth() {

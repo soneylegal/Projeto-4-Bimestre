@@ -1,6 +1,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useAuthStore } from '../store/auth'
+import { apiFetch } from '@/utils/api'
 
 const authStore = useAuthStore()
 const projects = ref([])
@@ -25,7 +26,7 @@ const fetchProjects = async () => {
   loading.value = true
   errorMsg.value = ''
   try {
-    const response = await fetch('/api/projects', {
+    const response = await apiFetch('/api/projects', {
       method: 'GET',
       headers: {
         'Accept': 'application/json',
@@ -46,7 +47,7 @@ const fetchProjects = async () => {
 
 const fetchStudents = async () => {
   try {
-    const response = await fetch('/api/auth/users?role=student', {
+    const response = await apiFetch('/api/auth/users?role=student', {
       method: 'GET',
       headers: {
         'Accept': 'application/json',
@@ -92,7 +93,7 @@ const handleCreateProject = async () => {
 
   submitting.value = true
   try {
-    const response = await fetch('/api/projects', {
+    const response = await apiFetch('/api/projects', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

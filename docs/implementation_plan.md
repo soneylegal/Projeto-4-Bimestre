@@ -273,20 +273,20 @@ CREATE INDEX idx_auth_audit_created ON auth_audit_log(created_at);
 
 ---
 
-### 🔲 Fase 2 — CRUD de Projetos e Tarefas (RF001–RF004, RF007, RF008)
+### ✅ Fase 2 — CRUD de Projetos e Tarefas (RF001–RF004, RF007, RF008) *(Concluída)*
 
 | Tarefa | Descrição | Status |
 |--------|-----------|:------:|
-| Models + migrations de projetos e tarefas | Tabelas `projects` (título, descrição, `repository_url`, membros) e `tasks` (status, responsável, prazo) | 🔲 |
-| `GET/POST/PUT/DELETE /api/projects` | CRUD completo; `POST` e `DELETE` restritos a `advisor` e acima | 🔲 |
-| `GET/POST/PUT/DELETE /api/tasks` | CRUD com campo `status`: `todo` / `in_progress` / `done` | 🔲 |
-| `PATCH /api/tasks/:id/status` | Movimentação de status (Kanban drag-and-drop) | 🔲 |
-| Middleware de perfil | `Depends(require_role(...))` no FastAPI; guards Vue ocultam ações não permitidas por role | 🔲 |
-| `ProjectsPage.vue` | Listagem com cards de projeto (substituir casca atual) | 🔲 |
-| `ProjectDetailPage.vue` | Detalhes do projeto + quadro Kanban com três colunas | 🔲 |
-| Quadro Kanban | Colunas A Fazer / Em Progresso / Concluído; movimentação por botão ou drag-and-drop | 🔲 |
-| Controle de acesso por perfil | Middleware FastAPI verifica `user.role`; guards Vue ocultam ações não permitidas | 🔲 |
-| Responsividade das Views | Garantir que o grid principal, a listagem de projetos e o quadro Kanban adaptem-se a telas mobile e tablets | 🔲 |
+| Models + migrations de projetos e tarefas | Tabelas `projects` (título, descrição, `repository_url`, membros) e `tasks` (status, responsável, prazo) | ✅ |
+| `GET/POST/PUT/DELETE /api/projects` | CRUD completo; `POST` e `DELETE` restritos a `advisor` e acima | ✅ |
+| `GET/POST/PUT/DELETE /api/tasks` | CRUD com campo `status`: `todo` / `in_progress` / `done` | ✅ |
+| `PATCH /api/tasks/:id/status` | Movimentação de status (Kanban drag-and-drop) | ✅ |
+| Middleware de perfil | `Depends(require_role(...))` no FastAPI; guards Vue ocultam ações não permitidas por role | ✅ |
+| `ProjectsPage.vue` | Listagem com cards de projeto (substituir casca atual) | ✅ |
+| `ProjectDetailPage.vue` | Detalhes do projeto + quadro Kanban com três colunas | ✅ |
+| Quadro Kanban | Colunas A Fazer / Em Progresso / Concluído; movimentação por botão ou drag-and-drop | ✅ |
+| Controle de acesso por perfil | Middleware FastAPI verifica `user.role`; guards Vue ocultam ações não permitidas | ✅ |
+| Responsividade das Views | Garantir que o grid principal, a listagem de projetos e o quadro Kanban adaptem-se a telas mobile e tablets | ✅ |
 
 ---
 
@@ -301,8 +301,8 @@ CREATE INDEX idx_auth_audit_created ON auth_audit_log(created_at);
 | `PATCH /api/submissions/:id/evaluate` | Salva `feedback` textual e muda status para `evaluated`; restrito a `advisor` | 🔲 |
 | `SubmissionsPage.vue` | Lista de entregas + formulário de upload + histórico de versões (substituir casca atual) | 🔲 |
 | Vinculação Git (RF007) | Campo `repository_url` em `projects`; exibido no `ProjectDetailPage.vue` | 🔲 |
-| Hospedagem na AWS | Configurar deploy da aplicação na AWS usando imagens Docker (Backend, Frontend, PostgreSQL) | 🔲 |
-| Guia de Deploy | Escrever instruções detalhadas de deploy e infraestrutura em nuvem na documentação | 🔲 |
+| Hospedagem na AWS | Configurar deploy da aplicação na AWS usando imagens Docker (Backend, Frontend, PostgreSQL) | ✅ |
+| Guia de Deploy | Escrever instruções detalhadas de deploy e infraestrutura em nuvem na documentação | ✅ |
 
 ---
 
