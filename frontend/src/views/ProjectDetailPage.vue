@@ -368,7 +368,12 @@ onMounted(() => {
                   :class="{ overdue: task.is_overdue }"
                 >
                   <div class="task-card-header">
-                    <span v-if="task.is_overdue" class="overdue-badge">Atrasada ⚠️</span>
+                    <span v-if="task.is_overdue" class="overdue-badge">
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="badge-svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                      </svg>
+                      Atrasada
+                    </span>
                   </div>
                   <h4 class="task-card-title">{{ task.title }}</h4>
                   <p class="task-card-desc">{{ task.description }}</p>
@@ -388,10 +393,14 @@ onMounted(() => {
                   <div v-if="isParticipant" class="task-card-actions">
                     <div class="utility-actions">
                       <button class="action-btn edit-task" title="Editar" @click="openEditTaskModal(task)">
-                        ✏️
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="action-btn-svg">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                        </svg>
                       </button>
                       <button class="action-btn delete-task" title="Excluir" @click="handleDeleteTask(task.id)">
-                        🗑️
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="action-btn-svg">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
                       </button>
                     </div>
                     <div class="movement-actions">
@@ -420,7 +429,12 @@ onMounted(() => {
                   :class="{ overdue: task.is_overdue }"
                 >
                   <div class="task-card-header">
-                    <span v-if="task.is_overdue" class="overdue-badge">Atrasada ⚠️</span>
+                    <span v-if="task.is_overdue" class="overdue-badge">
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="badge-svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                      </svg>
+                      Atrasada
+                    </span>
                   </div>
                   <h4 class="task-card-title">{{ task.title }}</h4>
                   <p class="task-card-desc">{{ task.description }}</p>
@@ -440,10 +454,14 @@ onMounted(() => {
                   <div v-if="isParticipant" class="task-card-actions">
                     <div class="utility-actions">
                       <button class="action-btn edit-task" title="Editar" @click="openEditTaskModal(task)">
-                        ✏️
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="action-btn-svg">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                        </svg>
                       </button>
                       <button class="action-btn delete-task" title="Excluir" @click="handleDeleteTask(task.id)">
-                        🗑️
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="action-btn-svg">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
                       </button>
                     </div>
                     <div class="movement-actions">
@@ -491,10 +509,14 @@ onMounted(() => {
                   <div v-if="isParticipant" class="task-card-actions">
                     <div class="utility-actions">
                       <button class="action-btn edit-task" title="Editar" @click="openEditTaskModal(task)">
-                        ✏️
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="action-btn-svg">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                        </svg>
                       </button>
                       <button class="action-btn delete-task" title="Excluir" @click="handleDeleteTask(task.id)">
-                        🗑️
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="action-btn-svg">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
                       </button>
                     </div>
                     <div class="movement-actions">
@@ -965,6 +987,14 @@ onMounted(() => {
   padding: 0.15rem 0.4rem;
   border-radius: 4px;
   text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.badge-svg {
+  width: 12px;
+  height: 12px;
 }
 
 .task-card-title {
@@ -1033,6 +1063,14 @@ onMounted(() => {
   padding: 0.25rem 0.4rem;
   font-size: 0.8rem;
   transition: var(--transition-fast);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.action-btn-svg {
+  width: 14px;
+  height: 14px;
 }
 
 .action-btn:hover {
