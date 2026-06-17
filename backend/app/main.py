@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from .database import engine, Base
-from .routers import auth, projects, tasks
+from .routers import auth, projects, tasks, submissions
 
 app = FastAPI(
     title="IFAL Projetos API",
@@ -22,6 +22,7 @@ app.add_middleware(
 app.include_router(auth.router)
 app.include_router(projects.router)
 app.include_router(tasks.router)
+app.include_router(submissions.router)
 
 @app.on_event("startup")
 async def startup():

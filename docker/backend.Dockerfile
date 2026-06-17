@@ -35,6 +35,8 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 # Copia o código-fonte da aplicação
 COPY app ./app
 COPY tests ./tests
+COPY migrations ./migrations
+COPY alembic.ini ./alembic.ini
 
 EXPOSE 8000
 
