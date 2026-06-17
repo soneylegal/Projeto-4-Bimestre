@@ -3,18 +3,19 @@ import { computed, ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { useAuthStore } from '@/store/auth'
 import { apiFetch, apiUrl } from '@/utils/api'
+import { useNotificationStore } from '../store/notifications'
 
 const route = useRoute()
 const authStore = useAuthStore()
+const notificationStore = useNotificationStore()
 const projectId = computed(() => route.params.id)
 
 // ── Estado ───────────────────────────────────────────────────────────────────
+const project = ref(null)
 const submissions = ref([])
 const loading = ref(false)
 const uploading = ref(false)
 const error = ref(null)
-const uploadError = ref(null)
-const uploadSuccess = ref(false)
 
 // Upload form
 const taskTitle = ref('')
@@ -26,15 +27,41 @@ const evalSubmissionId = ref(null)
 const evalFeedback = ref('')
 const evalSubmitting = ref(false)
 
-// Computed roles
-const isAdvisor = computed(() =>
-  ['advisor', 'admin', 'coordinator'].includes(authStore.user?.role)
-)
+// computed roles
+const isAdvisor = computed(() => {
+  if (!project.value || !authStore.user) return false
+  return authStore.user.role === 'admin' ||
+         authStore.user.role === 'coordinator' ||
+         (authStore.user.role === 'advisor' && project.value.advisor_id === authStore.user.id)
+})
 
-// ── Carregar submissões ───────────────────────────────────────────────────────
+const isMember = computed(() => {
+  if (!project.value || !authStore.user) return false
+  if (['admin', 'coordinator'].includes(authStore.user.role)) return true
+  return project.value.members.some(m => m.id === authStore.user.id)
+})
+
+const isStudent = computed(() => {
+  return authStore.user && authStore.user.role === 'student'
+})
+
+// ── Carregar Dados ────────────────────────────────────────────────────────────
+const fetchProject = async () => {
+  try {
+    const response = await apiFetch(`/api/projects/${projectId.value}`)
+    if (response.ok) {
+      project.value = await response.json()
+    } else {
+      throw new Error('Falha ao carregar os dados do projeto.')
+    }
+  } catch (err) {
+    console.error(err)
+    error.value = err.message
+    notificationStore.add(err.message, 'error')
+  }
+}
+
 async function loadSubmissions() {
-  loading.value = true
-  error.value = null
   try {
     const res = await apiFetch(`/api/submissions/${projectId.value}`)
     if (res.ok) {
@@ -42,16 +69,22 @@ async function loadSubmissions() {
     } else if (res.status === 404) {
       submissions.value = []
     } else {
-      error.value = 'Erro ao carregar submissões.'
+      error.value = 'Erro ao carregar histórico de submissões.'
     }
   } catch (e) {
     error.value = 'Erro de conexão ao carregar submissões.'
-  } finally {
-    loading.value = false
+    notificationStore.add(error.value, 'error')
   }
 }
 
-onMounted(loadSubmissions)
+onMounted(async () => {
+  loading.value = true
+  if (!authStore.user) {
+    await authStore.fetchUser()
+  }
+  await Promise.all([fetchProject(), loadSubmissions()])
+  loading.value = false
+})
 
 // ── Upload de arquivo ─────────────────────────────────────────────────────────
 const MAX_SIZE_MB = 50
@@ -61,25 +94,22 @@ function handleFileChange(e) {
   if (!file) return
 
   if (file.size > MAX_SIZE_MB * 1024 * 1024) {
-    uploadError.value = `O arquivo excede o limite de ${MAX_SIZE_MB} MB.`
+    notificationStore.add(`O arquivo excede o limite de ${MAX_SIZE_MB} MB.`, 'warning')
     selectedFile.value = null
     e.target.value = ''
     return
   }
 
-  uploadError.value = null
   selectedFile.value = file
 }
 
 async function handleUpload() {
   if (!selectedFile.value) {
-    uploadError.value = 'Por favor, selecione um arquivo.'
+    notificationStore.add('Por favor, selecione um arquivo.', 'warning')
     return
   }
 
   uploading.value = true
-  uploadError.value = null
-  uploadSuccess.value = false
 
   try {
     const formData = new FormData()
@@ -95,16 +125,16 @@ async function handleUpload() {
     })
 
     if (res.ok) {
-      uploadSuccess.value = true
+      notificationStore.add('Nova versão submetida com sucesso!', 'success')
       taskTitle.value = ''
       selectedFile.value = null
       await loadSubmissions()
     } else {
       const body = await res.json().catch(() => ({}))
-      uploadError.value = body.detail || 'Erro ao enviar arquivo.'
+      throw new Error(body.detail || 'Erro ao enviar arquivo.')
     }
   } catch (e) {
-    uploadError.value = 'Erro de conexão ao enviar arquivo.'
+    notificationStore.add(e.message, 'error')
   } finally {
     uploading.value = false
   }
@@ -112,7 +142,6 @@ async function handleUpload() {
 
 // ── Download ──────────────────────────────────────────────────────────────────
 function downloadSubmission(sub) {
-  // Abre o download em nova aba — o browser usará o cookie existente
   window.open(apiUrl(`/api/submissions/${sub.id}/download`), '_blank')
 }
 
@@ -130,7 +159,10 @@ function closeEvalModal() {
 }
 
 async function submitEvaluation() {
-  if (!evalFeedback.value.trim()) return
+  if (!evalFeedback.value.trim()) {
+    notificationStore.add('Por favor, insira um comentário ou feedback para a avaliação.', 'warning')
+    return
+  }
 
   evalSubmitting.value = true
   try {
@@ -141,14 +173,15 @@ async function submitEvaluation() {
     })
 
     if (res.ok) {
+      notificationStore.add('Avaliação e feedback registrados com sucesso!', 'success')
       closeEvalModal()
       await loadSubmissions()
     } else {
       const body = await res.json().catch(() => ({}))
-      alert(body.detail || 'Erro ao avaliar submissão.')
+      throw new Error(body.detail || 'Erro ao avaliar submissão.')
     }
   } catch (e) {
-    alert('Erro de conexão ao avaliar.')
+    notificationStore.add(e.message, 'error')
   } finally {
     evalSubmitting.value = false
   }
@@ -230,7 +263,7 @@ function statusLabel(s) {
                   d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
               </svg>
               <div class="file-info">
-                <span class="filename">{{ sub.original_filename }}</span>
+                <span class="filename">{{ sub.filename || sub.original_filename }}</span>
                 <span class="submitted-date">
                   Enviado por {{ sub.uploader?.name || 'Desconhecido' }} em {{ formatDate(sub.created_at) }}
                 </span>
@@ -266,7 +299,7 @@ function statusLabel(s) {
       </div>
 
       <!-- ── Upload ─────────────────────────────────────────────────── -->
-      <div class="submit-section">
+      <div v-if="isStudent && isMember" class="submit-section">
         <div class="submit-card glass-card">
           <h3 class="section-title">Nova Submissão</h3>
 
@@ -306,10 +339,6 @@ function statusLabel(s) {
                 />
               </div>
             </div>
-
-            <!-- Mensagens de feedback de upload -->
-            <div v-if="uploadError" class="feedback-msg error-msg">{{ uploadError }}</div>
-            <div v-if="uploadSuccess" class="feedback-msg success-msg">✓ Arquivo enviado com sucesso!</div>
 
             <button
               type="submit"

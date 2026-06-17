@@ -8,12 +8,20 @@ const authStore = useAuthStore()
 
 const user = computed(() => authStore.user)
 
-const pageTitle = computed(() => {
-  if (route.name === 'Dashboard') return 'Painel de Controle'
-  if (route.name === 'Projects') return 'Meus Projetos'
-  if (route.name === 'ProjectDetail') return 'Detalhes do Projeto'
-  if (route.name === 'Submissions') return 'Submissões de Tarefas'
-  return ''
+const breadcrumbs = computed(() => {
+  const list = [{ name: 'Painel', path: '/' }]
+  if (route.name === 'Projects') {
+    list.push({ name: 'Projetos', path: '/projects' })
+  } else if (route.name === 'ProjectDetail') {
+    list.push({ name: 'Projetos', path: '/projects' })
+    list.push({ name: 'Detalhes', path: route.path })
+  } else if (route.name === 'Submissions') {
+    list.push({ name: 'Projetos', path: '/projects' })
+    const projId = route.params.id
+    list.push({ name: 'Detalhes', path: `/projects/${projId}` })
+    list.push({ name: 'Submissões', path: route.path })
+  }
+  return list
 })
 
 const userInitials = computed(() => {
@@ -34,7 +42,23 @@ const handleLogout = async () => {
 <template>
   <header class="app-header glass-card">
     <div class="header-left">
-      <h1 class="page-title">{{ pageTitle }}</h1>
+      <!-- Breadcrumbs dinâmicos -->
+      <nav class="breadcrumbs">
+        <span v-for="(crumb, idx) in breadcrumbs" :key="crumb.path" class="crumb-wrapper">
+          <router-link :to="crumb.path" class="crumb-link">{{ crumb.name }}</router-link>
+          <svg v-if="idx < breadcrumbs.length - 1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="crumb-arrow">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+        </span>
+      </nav>
+    </div>
+
+    <!-- Campo de busca centralizado/à direita -->
+    <div class="header-search">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="search-icon">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+      </svg>
+      <input type="text" placeholder="Buscar no sistema..." class="search-input" />
     </div>
     
     <div class="header-right" v-if="user">
@@ -86,11 +110,75 @@ const handleLogout = async () => {
   background: var(--bg-glass);
 }
 
-.page-title {
-  font-family: 'Outfit', sans-serif;
-  font-size: 1.25rem;
-  font-weight: 700;
+.header-left {
+  display: flex;
+  align-items: center;
+}
+
+.breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.crumb-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.crumb-link {
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: var(--transition-fast);
+}
+
+.crumb-link:hover {
+  color: var(--color-primary);
+}
+
+.crumb-arrow {
+  width: 12px;
+  height: 12px;
+  color: var(--text-muted);
+}
+
+.header-search {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-md);
+  padding: 0.4rem 0.75rem;
+  max-width: 260px;
+  width: 100%;
+  transition: var(--transition-fast);
+}
+
+.header-search:focus-within {
+  border-color: var(--color-primary);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.search-icon {
+  width: 16px;
+  height: 16px;
+  color: var(--text-muted);
+}
+
+.search-input {
+  background: transparent;
+  border: none;
   color: var(--text-primary);
+  font-size: 0.825rem;
+  width: 100%;
+}
+
+.search-input:focus {
+  outline: none;
 }
 
 .header-right {
@@ -158,6 +246,8 @@ const handleLogout = async () => {
   border-radius: var(--radius-sm);
   color: var(--text-secondary);
   border: 1px solid var(--border-glass);
+  background: transparent;
+  cursor: pointer;
   transition: var(--transition-fast);
 }
 

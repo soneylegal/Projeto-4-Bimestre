@@ -89,7 +89,9 @@ class SubmissionResponse(BaseModel):
     id: UUID
     project_id: UUID
     version: int
-    original_filename: str
+    file_path: str
+    filename: str
+    original_filename: Optional[str] = None
     uploader_id: Optional[UUID] = None
     uploader: Optional[UserResponse] = None
     task_title: Optional[str] = None
@@ -103,3 +105,5 @@ class SubmissionResponse(BaseModel):
 class EvaluateRequest(BaseModel):
     feedback: str
 
+class SubmissionEvaluate(BaseModel):
+    feedback: str

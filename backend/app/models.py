@@ -88,6 +88,25 @@ class Task(Base):
     project = relationship("Project", back_populates="tasks")
     assignee = relationship("User", foreign_keys=[assigned_to], backref="assigned_tasks")
 
+class Submission(Base):
+    __tablename__ = "submissions"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    project_id = Column(UUID(as_uuid=True), ForeignKey("projects.id", ondelete="CASCADE"), nullable=False, index=True)
+    version = Column(Integer, nullable=False)
+    file_path = Column(String(1000), nullable=False)
+    filename = Column(String(255), nullable=False)
+    original_filename = Column(String(500), nullable=True)
+    uploader_id = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="SET NULL"), nullable=True, index=True)
+    task_title = Column(String(255), nullable=True)
+    feedback = Column(Text, nullable=True)
+    status = Column(String(20), nullable=False, default="pending")  # 'pending', 'evaluated'
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    # Relacionamentos
+    project = relationship("Project", back_populates="submissions")
+    uploader = relationship("User", foreign_keys=[uploader_id], backref="submissions")
+
 class AuditLog(Base):
     __tablename__ = "audit_logs"
 
@@ -100,21 +119,3 @@ class AuditLog(Base):
     created_at = Column(DateTime, default=datetime.utcnow, index=True)
 
     user = relationship("User", foreign_keys=[user_id])
-
-class Submission(Base):
-    __tablename__ = "submissions"
-
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    project_id = Column(UUID(as_uuid=True), ForeignKey("projects.id", ondelete="CASCADE"), nullable=False, index=True)
-    version = Column(Integer, nullable=False)  # auto-incremental por projeto
-    file_path = Column(String(1000), nullable=False)  # caminho no disco
-    original_filename = Column(String(500), nullable=False)
-    uploader_id = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="SET NULL"), nullable=True, index=True)
-    task_title = Column(String(255), nullable=True)  # título da tarefa associada (informativo)
-    feedback = Column(Text, nullable=True)
-    status = Column(String(20), nullable=False, default="pending")  # 'pending' | 'evaluated'
-    created_at = Column(DateTime, default=datetime.utcnow)
-
-    # Relacionamentos
-    project = relationship("Project", back_populates="submissions")
-    uploader = relationship("User", foreign_keys=[uploader_id])
