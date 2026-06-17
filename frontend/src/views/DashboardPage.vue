@@ -19,28 +19,47 @@ const loading = ref(true)
 const projects = ref([])
 const tasks = ref([])
 const submissions = ref([])
+const totalUsersCount = ref(0)
+const totalStudentsCount = ref(0)
 
 // Dynamic metrics depending on user role and real data
 const stats = computed(() => {
-  if (user.value?.role === 'advisor' || user.value?.role === 'coordinator' || user.value?.role === 'admin') {
-    // Unique student members list
+  if (!user.value) return []
+
+  const role = user.value.role
+
+  if (role === 'admin') {
+    return [
+      { label: 'Total de Projetos', value: projects.value.length.toString(), icon: 'M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10', color: 'indigo' },
+      { label: 'Usuários Cadastrados', value: totalUsersCount.value.toString(), icon: 'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z', color: 'emerald' },
+      { label: 'Submissões no Sistema', value: submissions.value.length.toString(), icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4', color: 'accent' }
+    ]
+  }
+
+  if (role === 'coordinator') {
+    const pendingCount = submissions.value.filter(s => s.status === 'pending').length
+    return [
+      { label: 'Total de Projetos (Sistema)', value: projects.value.length.toString(), icon: 'M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10', color: 'indigo' },
+      { label: 'Bolsistas Ativos (Sistema)', value: totalStudentsCount.value.toString(), icon: 'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z', color: 'emerald' },
+      { label: 'Submissões Pendentes (Sistema)', value: pendingCount.toString(), icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4', color: 'amber' }
+    ]
+  }
+
+  if (role === 'advisor') {
     const uniqueMembers = new Set()
     projects.value.forEach(p => {
       if (p.members) {
         p.members.forEach(m => uniqueMembers.add(m.id))
       }
     })
-    
-    // Pending submissions count
     const pendingCount = submissions.value.filter(s => s.status === 'pending').length
-
     return [
       { label: 'Projetos Orientados', value: projects.value.length.toString(), icon: 'M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10', color: 'indigo' },
-      { label: 'Bolsistas Ativos', value: uniqueMembers.size.toString(), icon: 'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z', color: 'emerald' },
-      { label: 'Submissões Pendentes', value: pendingCount.toString(), icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4', color: 'amber' }
+      { label: 'Bolsistas sob Orientação', value: uniqueMembers.size.toString(), icon: 'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z', color: 'emerald' },
+      { label: 'Entregas Pendentes', value: pendingCount.toString(), icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4', color: 'amber' }
     ]
   }
-  
+
   // Student metrics
   const myTasksCount = tasks.value.filter(t => t.assigned_to === user.value?.id && t.status !== 'done').length
   const completedDeliveries = submissions.value.filter(s => s.uploader_id === user.value?.id).length
@@ -120,6 +139,21 @@ const fetchDashboardData = async () => {
     
     tasks.value = allTasks.flat()
     submissions.value = allSubs.flat()
+
+    // Additional data fetching for Coordinator and Admin roles
+    if (authStore.user?.role === 'admin') {
+      const usersResp = await fetch('/api/auth/users')
+      if (usersResp.ok) {
+        const usersList = await usersResp.json()
+        totalUsersCount.value = usersList.length
+      }
+    } else if (authStore.user?.role === 'coordinator') {
+      const studentsResp = await fetch('/api/auth/users?role=student')
+      if (studentsResp.ok) {
+        const studentsList = await studentsResp.json()
+        totalStudentsCount.value = studentsList.length
+      }
+    }
   } catch (err) {
     console.error('Erro no Dashboard:', err)
   } finally {
@@ -140,7 +174,7 @@ onMounted(async () => {
     <!-- Welcome banner -->
     <div class="welcome-banner glass-card">
       <div class="welcome-text">
-        <h2 class="welcome-title">Olá, {{ user.name }}! 👋</h2>
+        <h2 class="welcome-title">Olá, {{ user.name }}!</h2>
         <p class="welcome-subtitle">Bem-vindo de volta. Aqui está um resumo das atividades do seu perfil de <strong>{{ userRoleLabel }}</strong>.</p>
       </div>
       <div class="user-meta-details">
