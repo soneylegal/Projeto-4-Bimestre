@@ -26,7 +26,7 @@ from ..auth_utils import (
 router = APIRouter(prefix="/api/auth", tags=["auth"])
 
 @router.get("/authorize")
-async def authorize(role: Optional[str] = None):
+async def authorize(role: str | None = None):
     """Redireciona o usuário para a página de autorização do SUAP."""
     # Em modo mock (demo/apresentação), pula o SUAP e vai direto pro callback
     if settings.SUAP_CLIENT_ID == "mock_client_id":
