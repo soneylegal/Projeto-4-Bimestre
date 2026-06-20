@@ -1,6 +1,6 @@
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
-import { createUnhead } from '@unhead/vue'
+import { createUnhead, headSymbol } from '@unhead/vue'
 import App from './App.vue'
 import router from './router'
 
@@ -13,6 +13,6 @@ const head = createUnhead()
 
 app.use(pinia)
 app.use(router)
-app.use(head)
+app.provide(headSymbol, head)
 
 app.mount('#app')
