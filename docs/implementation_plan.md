@@ -4,7 +4,7 @@
 > **Stack Front-end:** Vue.js 3 + Vite + Vanilla CSS
 > **Stack Back-end:** FastAPI (Python 3.11) + PostgreSQL
 > **Autenticação:** OAuth2 via SUAP (Backend-For-Frontend)
-> **Atualizado em:** 02/06/2026
+> **Atualizado em:** 20/06/2026
 
 ---
 
@@ -306,27 +306,63 @@ CREATE INDEX idx_auth_audit_created ON auth_audit_log(created_at);
 
 ---
 
-### 🔲 Fase 4 — Estética Premium
+### ✅ Fase 4 — Estética Premium *(Concluída)*
 
-| Tarefa | Descrição | Status |
-|--------|-----------|:------:|
-| Redesign do Header | Avatar do SUAP, breadcrumbs dinâmicos, campo de busca | 🔲 |
-| Dashboard com métricas | Stat cards: projetos ativos, tarefas pendentes, entregas recentes | 🔲 |
-| Animações | `<Transition>` e `<TransitionGroup>` do Vue; fade/slide nas trocas de rota | 🔲 |
-| Empty states | Ilustrações SVG inline para listas vazias | 🔲 |
-| Toast/notificações | Componente global via Pinia; auto-dismiss em 4s; usado também para feedback de erros de auth (RF-L03) | 🔲 |
+| Tarefa | Descrição | Status | Arquivo(s) |
+|--------|-----------|:------:|------------|
+| Redesign do Header | Avatar do SUAP, breadcrumbs dinâmicos, campo de busca | ✅ | `frontend/src/components/AppHeader.vue` |
+| Dashboard com métricas | Stat cards com dados reais da API, loading/empty states, métricas por papel | ✅ | `frontend/src/views/DashboardPage.vue` |
+| Animações | `<Transition>` e `<TransitionGroup>` do Vue; fade/slide nas trocas de rota | ✅ | `frontend/src/layouts/MainLayout.vue`, `frontend/src/components/ToastNotification.vue` |
+| Empty states | Ilustrações SVG inline para listas vazias | ✅ | `DashboardPage.vue`, `ProjectsPage.vue`, `ProjectDetailPage.vue`, `SubmissionsPage.vue` |
+| Toast/notificações | Componente global via Pinia com auto-dismiss (4s), 4 tipos | ✅ | `frontend/src/components/ToastNotification.vue`, `frontend/src/store/notifications.js` |
 
 ---
 
-### 🔲 Fase 5 — Polimento Final
+### ✅ Fase 5 — Polimento Final *(Concluída)*
+
+| Tarefa | Descrição | Status | Arquivo(s) |
+|--------|-----------|:------:|------------|
+| Skeleton loaders | `SkeletonCard.vue` com 5 variantes e animação shimmer | ✅ | `frontend/src/components/SkeletonCard.vue` |
+| Responsividade | Sidebar colapsável com hamburger, overlay no mobile, search adaptável | ✅ | `frontend/src/layouts/MainLayout.vue`, `frontend/src/components/SidebarNav.vue`, `frontend/src/components/AppHeader.vue` |
+| Microanimações | `:focus-visible` global + `@media (prefers-reduced-motion: reduce)` | ✅ | `frontend/src/assets/global.css` |
+| SEO | `@unhead/vue` com `useHead()` por rota, meta tags, `lang="pt-BR"` | ✅ | `frontend/src/main.js`, `frontend/src/router/index.js`, todas as views |
+| Relatórios com IA (RF010) | `POST /api/reports/generate` com prompt → LLM via httpx + fallback mock | ✅ | `backend/app/routers/reports.py`, `backend/app/schemas.py` |
+
+---
+
+### 🔲 Fase 6 — Identidade Visual IFAL
+
+| Tarefa | Descrição | Status | Arquivo(s) |
+|--------|-----------|:------:|------------|
+| 6.1 | Substituir `--gradient-primary` (roxo) pelo verde IFAL + azul complementar | 🔲 | `frontend/src/assets/variables.css` |
+| 6.2 | Atualizar `--color-primary`, `--color-secondary`, badges de papel na sidebar | 🔲 | `frontend/src/assets/variables.css`, `frontend/src/components/SidebarNav.vue` |
+| 6.3 | Novo branding no sidebar com marca/tema do IFAL | 🔲 | `frontend/src/components/SidebarNav.vue` |
+| 6.4 | Ajustar glassmorphism e demais componentes para harmonizar com a nova paleta | 🔲 | `frontend/src/assets/global.css`, demais componentes |
+| 6.5 | Revisar contraste e acessibilidade com as novas cores | 🔲 | Todas as views |
+
+### 🔲 Fase 7 — Diferenciação de Papéis
+
+| Tarefa | Descrição | Status | Arquivo(s) |
+|--------|-----------|:------:|------------|
+| 7.1 | Menu lateral dinâmico — cada papel vê itens diferentes (admin vê "Usuários", estudante não vê "Relatórios") | 🔲 | `frontend/src/components/SidebarNav.vue`, `frontend/src/router/index.js` |
+| 7.2 | Admin Panel — view exclusiva com CRUD de usuários, logs de auditoria, config do sistema | 🔲 | `frontend/src/views/AdminPanel.vue` |
+| 7.3 | Coordenador — visão macro de todos os projetos + métricas institucionais | 🔲 | `frontend/src/views/DashboardPage.vue`, nova view |
+| 7.4 | Orientador — foco nos projetos orientados, fila de avaliações pendentes | 🔲 | `frontend/src/views/DashboardPage.vue`, nova view |
+| 7.5 | Estudante — visão simplificada: só seus projetos, tarefas e entregas | 🔲 | `frontend/src/views/DashboardPage.vue` |
+| 7.6 | Layout por papel — cores de destaque diferentes, badges, mensagens de boas-vindas personalizadas | 🔲 | `frontend/src/layouts/MainLayout.vue` |
+| 7.7 | Rota raiz (`/`) diferente por papel: admin → `/admin`, estudante → `/meus-projetos` | 🔲 | `frontend/src/router/index.js` |
+
+### 🔲 Fase 8 — Novas Funcionalidades
 
 | Tarefa | Descrição | Status |
 |--------|-----------|:------:|
-| Skeleton loaders | Componente `SkeletonCard.vue` para listas em carregamento | 🔲 |
-| Responsividade | Polimento e ajustes finos de responsividade geral nas demais views do sistema | 🔲 |
-| Microanimações | `:hover` e `:focus-visible` com `transition` em CSS | 🔲 |
-| SEO | `useHead` por rota com meta `title` e `description` | 🔲 |
-| Relatórios com IA (RF010) | `POST /api/reports/generate` → monta prompt com dados do projeto → chama API externa de LLM → retorna Markdown renderizável | 🔲 |
+| 8.1 | Gestão de usuários (admin): listar, editar, ativar/desativar | 🔲 |
+| 8.2 | Gráficos no Dashboard (Chart.js ou similar) | 🔲 |
+| 8.3 | Calendário acadêmico com prazos de tarefas | 🔲 |
+| 8.4 | Notificações em tempo real (WebSocket ou Server-Sent Events) | 🔲 |
+| 8.5 | Chat orientador-estudante por projeto | 🔲 |
+| 8.6 | Exportar relatórios em PDF | 🔲 |
+| 8.7 | Página de perfil do usuário (editar dados, alterar senha) | 🔲 |
 
 ---
 
