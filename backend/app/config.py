@@ -38,5 +38,10 @@ class Settings:
         ).split(",") if o.strip()
     ]
 
+    # LLM / AI Report settings
+    LLM_API_KEY: str = os.getenv("LLM_API_KEY", "")
+    LLM_API_URL: str = os.getenv("LLM_API_URL", "https://api.openai.com/v1/chat/completions")
+    LLM_MODEL: str = os.getenv("LLM_MODEL", "gpt-4o-mini")
+
 settings = Settings()
 
