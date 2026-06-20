@@ -1,6 +1,18 @@
 <script setup>
 import { ref } from 'vue'
 import { useAuthStore } from '../store/auth'
+import { useHead } from '@unhead/vue'
+import { useRoute } from 'vue-router'
+
+const route = useRoute()
+useHead({
+  title: route.meta.title || 'IFAL Projetos',
+  meta: [
+    { name: 'description', content: route.meta.description || '' },
+    { property: 'og:title', content: route.meta.title || 'IFAL Projetos' },
+    { property: 'og:description', content: route.meta.description || '' },
+  ]
+})
 
 const authStore = useAuthStore()
 

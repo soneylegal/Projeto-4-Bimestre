@@ -2,6 +2,19 @@
 import { ref, computed, onMounted } from 'vue'
 import { useAuthStore } from '../store/auth'
 import { apiFetch } from '@/utils/api'
+import { useHead } from '@unhead/vue'
+import { useRoute } from 'vue-router'
+import SkeletonCard from '../components/SkeletonCard.vue'
+
+const route = useRoute()
+useHead({
+  title: route.meta.title || 'IFAL Projetos',
+  meta: [
+    { name: 'description', content: route.meta.description || '' },
+    { property: 'og:title', content: route.meta.title || 'IFAL Projetos' },
+    { property: 'og:description', content: route.meta.description || '' },
+  ]
+})
 
 const authStore = useAuthStore()
 const projects = ref([])
@@ -148,8 +161,7 @@ onMounted(() => {
 
     <!-- Feedback States -->
     <div v-if="loading" class="state-card loading-state glass-card">
-      <div class="spinner"></div>
-      <p>Carregando projetos...</p>
+      <SkeletonCard variant="card" :count="6" />
     </div>
 
     <div v-else-if="errorMsg" class="state-card error-state glass-card">

@@ -1,6 +1,19 @@
 <script setup>
 import { computed, ref, onMounted } from 'vue'
 import { useAuthStore } from '../store/auth'
+import { useHead } from '@unhead/vue'
+import { useRoute } from 'vue-router'
+import SkeletonCard from '../components/SkeletonCard.vue'
+
+const route = useRoute()
+useHead({
+  title: route.meta.title || 'IFAL Projetos',
+  meta: [
+    { name: 'description', content: route.meta.description || '' },
+    { property: 'og:title', content: route.meta.title || 'IFAL Projetos' },
+    { property: 'og:description', content: route.meta.description || '' },
+  ]
+})
 
 const authStore = useAuthStore()
 const user = computed(() => authStore.user)
@@ -190,8 +203,8 @@ onMounted(async () => {
     </div>
 
     <div v-if="loading" class="loading-wrapper">
-      <div class="spinner"></div>
-      <p>Carregando dados do painel de controle...</p>
+      <SkeletonCard variant="stat-card" :count="3" />
+      <SkeletonCard variant="text-block" :rows="4" />
     </div>
 
     <div v-else class="dashboard-data-layout">

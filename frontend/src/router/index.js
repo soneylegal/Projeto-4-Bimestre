@@ -14,7 +14,11 @@ const routes = [
     path: '/login',
     name: 'Login',
     component: LoginPage,
-    meta: { requiresAuth: false }
+    meta: { 
+      requiresAuth: false,
+      title: 'Login | IFAL Projetos',
+      description: 'Acesse a plataforma de gestão de projetos acadêmicos do IFAL com suas credenciais SUAP.'
+    }
   },
   {
     path: '/',
@@ -24,26 +28,41 @@ const routes = [
       {
         path: '',
         name: 'Dashboard',
-        component: DashboardPage
+        component: DashboardPage,
+        meta: {
+          title: 'Dashboard | IFAL Projetos',
+          description: 'Painel de controle com visão geral de projetos, tarefas e submissões acadêmicas.'
+        }
       },
       {
         path: 'projects',
         name: 'Projects',
-        component: ProjectsPage
+        component: ProjectsPage,
+        meta: {
+          title: 'Projetos | IFAL Projetos',
+          description: 'Gerencie e visualize todos os projetos acadêmicos vinculados à sua conta.'
+        }
       },
       {
         path: 'projects/:id',
         name: 'ProjectDetail',
-        component: ProjectDetailPage
+        component: ProjectDetailPage,
+        meta: {
+          title: 'Detalhes do Projeto | IFAL Projetos',
+          description: 'Visualize detalhes, equipe e quadro Kanban do projeto acadêmico.'
+        }
       },
       {
         path: 'projects/:id/submissions',
         name: 'Submissions',
-        component: SubmissionsPage
+        component: SubmissionsPage,
+        meta: {
+          title: 'Submissões | IFAL Projetos',
+          description: 'Histórico de submissões e entregas de arquivos do projeto acadêmico.'
+        }
       }
     ]
   },
-  // Redirect any unknown path to home
   {
     path: '/:pathMatch(.*)*',
     redirect: '/'

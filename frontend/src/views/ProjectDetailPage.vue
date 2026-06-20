@@ -1,12 +1,24 @@
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useAuthStore } from '../store/auth'
 import { apiFetch } from '@/utils/api'
 import { useNotificationStore } from '../store/notifications'
+import SkeletonCard from '../components/SkeletonCard.vue'
+import { useHead } from '@unhead/vue'
 
 const route = useRoute()
 const router = useRouter()
+
+useHead({
+  title: route.meta.title || 'IFAL Projetos',
+  meta: [
+    { name: 'description', content: route.meta.description || '' },
+    { property: 'og:title', content: route.meta.title || 'IFAL Projetos' },
+    { property: 'og:description', content: route.meta.description || '' },
+  ]
+})
+
 const authStore = useAuthStore()
 const notificationStore = useNotificationStore()
 
@@ -254,8 +266,8 @@ onMounted(() => {
 
     <!-- Feedback States -->
     <div v-if="loading" class="state-card loading-state glass-card">
-      <div class="spinner"></div>
-      <p>Carregando dados do projeto...</p>
+      <SkeletonCard variant="text-block" :rows="8" />
+      <SkeletonCard variant="kanban-card" :count="3" />
     </div>
 
     <div v-else-if="errorMsg" class="state-card error-state glass-card">

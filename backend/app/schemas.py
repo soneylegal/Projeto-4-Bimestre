@@ -107,3 +107,14 @@ class EvaluateRequest(BaseModel):
 
 class SubmissionEvaluate(BaseModel):
     feedback: str
+
+# ── Reports ─────────────────────────────────────────────────────────────────
+
+class ReportRequest(BaseModel):
+    project_id: UUID
+    context: Optional[str] = None
+
+class ReportResponse(BaseModel):
+    report: str
+    project_id: UUID
+    generated_at: datetime

@@ -1,9 +1,19 @@
 <script setup>
 import { computed } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { useAuthStore } from '../store/auth'
 
+defineProps({
+  open: {
+    type: Boolean,
+    default: true
+  }
+})
+
+const emit = defineEmits(['close'])
+
 const route = useRoute()
+const router = useRouter()
 const authStore = useAuthStore()
 
 const userRole = computed(() => authStore.user?.role || 'student')
@@ -31,10 +41,16 @@ const isActive = (path) => {
   }
   return route.path.startsWith(path)
 }
+
+const handleNavClick = () => {
+  if (window.innerWidth < 768) {
+    emit('close')
+  }
+}
 </script>
 
 <template>
-  <aside class="sidebar">
+  <aside class="sidebar" :class="{ 'sidebar-open': open }">
     <div class="sidebar-brand">
       <div class="brand-logo">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="logo-icon">
@@ -51,6 +67,7 @@ const isActive = (path) => {
         :to="item.path" 
         class="menu-item"
         :class="{ active: isActive(item.path) }"
+        @click="handleNavClick"
       >
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="item-icon">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" :d="item.icon" />
@@ -191,5 +208,32 @@ const isActive = (path) => {
   background: rgba(239, 68, 68, 0.1);
   color: var(--color-danger);
   border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+@media (max-width: 767px) {
+  .sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .sidebar.sidebar-open {
+    transform: translateX(0);
+  }
+
+  .sidebar::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: -1;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+
+  .sidebar.sidebar-open::after {
+    opacity: 1;
+    pointer-events: auto;
+  }
 }
 </style>

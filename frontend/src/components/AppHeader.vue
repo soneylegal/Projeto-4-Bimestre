@@ -3,6 +3,8 @@ import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { useAuthStore } from '../store/auth'
 
+defineEmits(['toggle-sidebar'])
+
 const route = useRoute()
 const authStore = useAuthStore()
 
@@ -42,7 +44,12 @@ const handleLogout = async () => {
 <template>
   <header class="app-header glass-card">
     <div class="header-left">
-      <!-- Breadcrumbs dinâmicos -->
+      <button class="hamburger-btn" @click="$emit('toggle-sidebar')" aria-label="Abrir menu">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="hamburger-icon">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+
       <nav class="breadcrumbs">
         <span v-for="(crumb, idx) in breadcrumbs" :key="crumb.path" class="crumb-wrapper">
           <router-link :to="crumb.path" class="crumb-link">{{ crumb.name }}</router-link>
@@ -53,12 +60,11 @@ const handleLogout = async () => {
       </nav>
     </div>
 
-    <!-- Campo de busca centralizado/à direita -->
     <div class="header-search">
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="search-icon">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
       </svg>
-      <input type="text" placeholder="Buscar no sistema..." class="search-input" />
+      <input type="text" placeholder="Buscar..." class="search-input" />
     </div>
     
     <div class="header-right" v-if="user">
@@ -108,23 +114,53 @@ const handleLogout = async () => {
   border-right: none;
   border-bottom: 1px solid var(--border-glass);
   background: var(--bg-glass);
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .header-left {
   display: flex;
   align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.hamburger-btn {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: var(--transition-fast);
+  background: transparent;
+  flex-shrink: 0;
+}
+
+.hamburger-btn:hover {
+  color: var(--text-primary);
+  border-color: var(--color-primary);
+}
+
+.hamburger-icon {
+  width: 20px;
+  height: 20px;
 }
 
 .breadcrumbs {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  overflow: hidden;
 }
 
 .crumb-wrapper {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  white-space: nowrap;
 }
 
 .crumb-link {
@@ -143,6 +179,7 @@ const handleLogout = async () => {
   width: 12px;
   height: 12px;
   color: var(--text-muted);
+  flex-shrink: 0;
 }
 
 .header-search {
@@ -167,6 +204,7 @@ const handleLogout = async () => {
   width: 16px;
   height: 16px;
   color: var(--text-muted);
+  flex-shrink: 0;
 }
 
 .search-input {
@@ -185,6 +223,7 @@ const handleLogout = async () => {
   display: flex;
   align-items: center;
   gap: 1.5rem;
+  flex-shrink: 0;
 }
 
 .user-profile {
@@ -217,6 +256,7 @@ const handleLogout = async () => {
   overflow: hidden;
   border: 2px solid var(--color-primary);
   box-shadow: var(--shadow-sm);
+  flex-shrink: 0;
 }
 
 .user-avatar {
@@ -249,6 +289,7 @@ const handleLogout = async () => {
   background: transparent;
   cursor: pointer;
   transition: var(--transition-fast);
+  flex-shrink: 0;
 }
 
 .logout-btn:hover {
@@ -260,5 +301,30 @@ const handleLogout = async () => {
 .logout-icon {
   width: 18px;
   height: 18px;
+}
+
+@media (max-width: 767px) {
+  .app-header {
+    width: 100%;
+    padding: 0 1rem;
+  }
+
+  .hamburger-btn {
+    display: flex;
+  }
+
+  .header-search {
+    max-width: 140px;
+  }
+}
+
+@media (max-width: 640px) {
+  .header-search {
+    display: none;
+  }
+
+  .user-email {
+    display: none;
+  }
 }
 </style>
