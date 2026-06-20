@@ -1,7 +1,19 @@
 <script setup>
 import { computed, ref, onMounted } from 'vue'
 import { useAuthStore } from '../store/auth'
+import { useHead } from '@unhead/vue'
+import { useRoute } from 'vue-router'
 import SkeletonCard from '../components/SkeletonCard.vue'
+
+const route = useRoute()
+useHead({
+  title: route.meta.title || 'IFAL Projetos',
+  meta: [
+    { name: 'description', content: route.meta.description || '' },
+    { property: 'og:title', content: route.meta.title || 'IFAL Projetos' },
+    { property: 'og:description', content: route.meta.description || '' },
+  ]
+})
 
 const authStore = useAuthStore()
 const user = computed(() => authStore.user)

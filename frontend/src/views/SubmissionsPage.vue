@@ -5,8 +5,19 @@ import { useAuthStore } from '@/store/auth'
 import { apiFetch, apiUrl } from '@/utils/api'
 import { useNotificationStore } from '../store/notifications'
 import SkeletonCard from '../components/SkeletonCard.vue'
+import { useHead } from '@unhead/vue'
 
 const route = useRoute()
+
+useHead({
+  title: route.meta.title || 'IFAL Projetos',
+  meta: [
+    { name: 'description', content: route.meta.description || '' },
+    { property: 'og:title', content: route.meta.title || 'IFAL Projetos' },
+    { property: 'og:description', content: route.meta.description || '' },
+  ]
+})
+
 const authStore = useAuthStore()
 const notificationStore = useNotificationStore()
 const projectId = computed(() => route.params.id)
