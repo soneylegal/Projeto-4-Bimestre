@@ -4,6 +4,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { useAuthStore } from '../store/auth'
 import { apiFetch } from '@/utils/api'
 import { useNotificationStore } from '../store/notifications'
+import SkeletonCard from '../components/SkeletonCard.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -254,8 +255,8 @@ onMounted(() => {
 
     <!-- Feedback States -->
     <div v-if="loading" class="state-card loading-state glass-card">
-      <div class="spinner"></div>
-      <p>Carregando dados do projeto...</p>
+      <SkeletonCard variant="text-block" :rows="8" />
+      <SkeletonCard variant="kanban-card" :count="3" />
     </div>
 
     <div v-else-if="errorMsg" class="state-card error-state glass-card">

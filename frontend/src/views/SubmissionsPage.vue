@@ -4,6 +4,7 @@ import { useRoute } from 'vue-router'
 import { useAuthStore } from '@/store/auth'
 import { apiFetch, apiUrl } from '@/utils/api'
 import { useNotificationStore } from '../store/notifications'
+import SkeletonCard from '../components/SkeletonCard.vue'
 
 const route = useRoute()
 const authStore = useAuthStore()
@@ -220,8 +221,7 @@ function statusLabel(s) {
 
         <!-- Loading -->
         <div v-if="loading" class="state-placeholder">
-          <div class="spinner"></div>
-          <span>Carregando submissões...</span>
+          <SkeletonCard variant="list-item" :count="4" />
         </div>
 
         <!-- Erro -->
