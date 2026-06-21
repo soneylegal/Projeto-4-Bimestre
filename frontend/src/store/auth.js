@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { apiFetch, apiUrl } from '@/utils/api'
+import { apiFetch, apiFetchWithTimeout, apiUrl } from '@/utils/api'
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
@@ -28,12 +28,12 @@ export const useAuthStore = defineStore('auth', {
     async fetchUser() {
       this.loading = true
       try {
-        const response = await apiFetch('/api/auth/me', {
+        const response = await apiFetchWithTimeout('/api/auth/me', {
           method: 'GET',
           headers: {
             'Accept': 'application/json',
           }
-        })
+        }, 15000)
         
         if (response.ok) {
           const data = await response.json()

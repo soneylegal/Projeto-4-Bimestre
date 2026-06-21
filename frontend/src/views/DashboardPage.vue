@@ -4,6 +4,7 @@ import { useAuthStore } from '../store/auth'
 import { useHead } from '@unhead/vue'
 import { useRoute } from 'vue-router'
 import SkeletonCard from '../components/SkeletonCard.vue'
+import { apiFetchWithTimeout } from '../utils/api'
 
 const route = useRoute()
 useHead({
@@ -166,14 +167,13 @@ const recentActivities = computed(() => {
 const fetchDashboardData = async () => {
   try {
     loading.value = true
-    const projResp = await fetch('/api/projects')
+    const projResp = await apiFetchWithTimeout('/api/projects', {}, 10000)
     if (!projResp.ok) throw new Error('Erro ao buscar projetos.')
     const projList = await projResp.json()
     projects.value = projList
 
-    // Fetch tasks and submissions for all projects in parallel
-    const taskPromises = projList.map(p => fetch(`/api/tasks?project_id=${p.id}`).then(r => r.ok ? r.json() : []))
-    const subPromises = projList.map(p => fetch(`/api/submissions/${p.id}`).then(r => r.ok ? r.json() : []))
+    const taskPromises = projList.map(p => apiFetchWithTimeout(`/api/tasks?project_id=${p.id}`, {}, 10000).then(r => r.ok ? r.json() : []))
+    const subPromises = projList.map(p => apiFetchWithTimeout(`/api/submissions/${p.id}`, {}, 10000).then(r => r.ok ? r.json() : []))
     
     const allTasks = await Promise.all(taskPromises)
     const allSubs = await Promise.all(subPromises)
@@ -181,17 +181,16 @@ const fetchDashboardData = async () => {
     tasks.value = allTasks.flat()
     submissions.value = allSubs.flat()
 
-    // Additional data fetching for Coordinator and Admin roles
     if (authStore.isAdmin) {
-      const usersResp = await fetch('/api/auth/users')
+      const usersResp = await apiFetchWithTimeout('/api/auth/users', {}, 10000)
       if (usersResp.ok) {
         const usersList = await usersResp.json()
         totalUsersCount.value = usersList.length
       }
     } else if (authStore.isCoordinator) {
       const [studentsResp, advisorsResp] = await Promise.all([
-        fetch('/api/auth/users?role=student'),
-        fetch('/api/auth/users?role=advisor')
+        apiFetchWithTimeout('/api/auth/users?role=student', {}, 10000),
+        apiFetchWithTimeout('/api/auth/users?role=advisor', {}, 10000)
       ])
       if (studentsResp.ok) {
         const studentsList = await studentsResp.json()

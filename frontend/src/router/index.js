@@ -13,6 +13,7 @@ const AuditLogPage = () => import('../views/admin/AuditLogPage.vue')
 const SettingsPage = () => import('../views/admin/SettingsPage.vue')
 const MyProjectsPage = () => import('../views/student/MyProjectsPage.vue')
 const PendingEvaluationsPage = () => import('../views/evaluator/PendingEvaluationsPage.vue')
+const ReportsPage = () => import('../views/reports/ReportsPage.vue')
 
 const routes = [
   {
@@ -109,6 +110,16 @@ const routes = [
           role: ['advisor', 'coordinator', 'admin'],
           title: 'Avaliações Pendentes | IFAL Projetos',
           description: 'Gerencie as submissões pendentes de avaliação.'
+        }
+      },
+      {
+        path: 'reports',
+        name: 'Reports',
+        component: ReportsPage,
+        meta: {
+          role: ['coordinator', 'admin'],
+          title: 'Relatórios | IFAL Projetos',
+          description: 'Relatórios institucionais e métricas acadêmicas.'
         }
       }
     ]
