@@ -7,6 +7,22 @@ export const useAuthStore = defineStore('auth', {
     isAuthenticated: false,
     loading: true,
   }),
+
+  getters: {
+    role: (state) => state.user?.role || null,
+    isStudent: (state) => state.user?.role === 'student',
+    isAdvisor: (state) => state.user?.role === 'advisor',
+    isCoordinator: (state) => state.user?.role === 'coordinator',
+    isAdmin: (state) => state.user?.role === 'admin',
+    can: (state) => {
+      const hierarchy = ['student', 'advisor', 'coordinator', 'admin']
+      return (minRole) => {
+        const userIdx = hierarchy.indexOf(state.user?.role)
+        const requiredIdx = hierarchy.indexOf(minRole)
+        return userIdx >= requiredIdx
+      }
+    }
+  },
   
   actions: {
     async fetchUser() {
