@@ -70,16 +70,17 @@ const notificationStore = useNotificationStore()
   gap: 0.75rem;
   padding: 0.85rem 1.25rem;
   border-radius: var(--radius-md);
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+  box-shadow: var(--shadow-lg);
   border-left: 4px solid var(--color-primary);
-  background: rgba(30, 41, 59, 0.85); /* fallback escuro para contraste */
+  background: var(--bg-primary);
+  border: 1px solid var(--border-glass);
 }
 
 /* Color types modifiers */
 .toast-item.success {
   border-left-color: var(--color-success);
-  background: rgba(16, 185, 129, 0.08);
-  border: 1px solid rgba(16, 185, 129, 0.15);
+  background: rgba(16, 185, 129, 0.04);
+  border: 1px solid rgba(16, 185, 129, 0.12);
   border-left: 4px solid var(--color-success);
 }
 .toast-item.success .toast-icon {
@@ -88,8 +89,8 @@ const notificationStore = useNotificationStore()
 
 .toast-item.error {
   border-left-color: var(--color-danger);
-  background: rgba(239, 68, 68, 0.08);
-  border: 1px solid rgba(239, 68, 68, 0.15);
+  background: rgba(239, 68, 68, 0.04);
+  border: 1px solid rgba(239, 68, 68, 0.12);
   border-left: 4px solid var(--color-danger);
 }
 .toast-item.error .toast-icon {
@@ -98,8 +99,8 @@ const notificationStore = useNotificationStore()
 
 .toast-item.warning {
   border-left-color: var(--color-warning);
-  background: rgba(245, 158, 11, 0.08);
-  border: 1px solid rgba(245, 158, 11, 0.15);
+  background: rgba(245, 158, 11, 0.04);
+  border: 1px solid rgba(245, 158, 11, 0.12);
   border-left: 4px solid var(--color-warning);
 }
 .toast-item.warning .toast-icon {
@@ -108,8 +109,8 @@ const notificationStore = useNotificationStore()
 
 .toast-item.info {
   border-left-color: var(--color-info);
-  background: rgba(59, 130, 246, 0.08);
-  border: 1px solid rgba(59, 130, 246, 0.15);
+  background: rgba(44, 103, 205, 0.04);
+  border: 1px solid rgba(44, 103, 205, 0.12);
   border-left: 4px solid var(--color-info);
 }
 .toast-item.info .toast-icon {
@@ -151,7 +152,7 @@ const notificationStore = useNotificationStore()
 
 .toast-close-btn:hover {
   color: var(--text-primary);
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--bg-tertiary);
 }
 
 .close-icon {

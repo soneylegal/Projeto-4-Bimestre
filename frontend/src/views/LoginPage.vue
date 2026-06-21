@@ -38,12 +38,7 @@ const handleLogin = () => {
     
     <div class="login-card glass-card">
       <div class="brand-section">
-        <div class="logo-wrapper">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="logo-icon">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-          </svg>
-        </div>
-        <h1 class="brand-name">IFAL <span class="text-gradient">Projetos</span></h1>
+        <img src="/src/assets/logo-ifal.png" alt="IFAL" class="brand-logo" />
         <p class="brand-tagline">Plataforma Integrada de Gestão de Projetos Acadêmicos</p>
       </div>
 
@@ -168,31 +163,12 @@ const handleLogin = () => {
   margin-bottom: 2rem;
 }
 
-.logo-wrapper {
-  width: 64px;
-  height: 64px;
-  background: var(--gradient-primary);
-  border-radius: var(--radius-md);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.brand-logo {
+  max-height: 80px;
+  width: auto;
+  object-fit: contain;
   margin: 0 auto 1.5rem auto;
-  box-shadow: 0 8px 24px 0 rgba(99, 102, 241, 0.3);
-}
-
-.logo-icon {
-  width: 32px;
-  height: 32px;
-  color: #ffffff;
-}
-
-.brand-name {
-  font-family: 'Outfit', sans-serif;
-  font-size: 2rem;
-  font-weight: 800;
-  letter-spacing: -0.03em;
-  color: var(--text-primary);
-  margin-bottom: 0.5rem;
+  display: block;
 }
 
 .brand-tagline {
@@ -218,7 +194,7 @@ const handleLogin = () => {
   width: 100%;
   padding: 0.875rem;
   font-size: 1rem;
-  box-shadow: 0 8px 20px 0 rgba(99, 102, 241, 0.4);
+  box-shadow: 0 8px 20px 0 rgba(25, 136, 44, 0.35);
 }
 
 .suap-icon {
@@ -265,7 +241,7 @@ const handleLogin = () => {
 }
 
 .role-opt-btn {
-  background: rgba(255, 255, 255, 0.02);
+  background: var(--bg-primary);
   border: 1px solid var(--border-glass);
   border-radius: var(--radius-md);
   padding: 0.75rem;
@@ -279,16 +255,16 @@ const handleLogin = () => {
 }
 
 .role-opt-btn:hover {
-  background: rgba(255, 255, 255, 0.05);
-  border-color: rgba(255, 255, 255, 0.2);
+  background: var(--bg-secondary);
+  border-color: var(--color-primary);
   transform: translateY(-1px);
 }
 
 .role-opt-btn.active {
-  background: rgba(99, 102, 241, 0.1);
+  background: rgba(25, 136, 44, 0.08);
   border-color: var(--color-primary);
   color: var(--color-primary);
-  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.15);
+  box-shadow: 0 4px 12px rgba(25, 136, 44, 0.12);
 }
 
 .role-opt-icon {

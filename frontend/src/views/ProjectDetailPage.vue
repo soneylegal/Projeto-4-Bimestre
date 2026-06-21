@@ -690,7 +690,7 @@ onMounted(() => {
   font-weight: 600;
   text-transform: uppercase;
   color: var(--color-primary);
-  background: rgba(99, 102, 241, 0.1);
+  background: rgba(25, 136, 44, 0.1);
   padding: 0.25rem 0.6rem;
   border-radius: 4px;
 }
@@ -832,16 +832,16 @@ onMounted(() => {
 }
 
 .advisor-item {
-  border-color: rgba(99, 102, 241, 0.2);
-  background: rgba(99, 102, 241, 0.03);
+  border-color: rgba(25, 136, 44, 0.2);
+  background: rgba(25, 136, 44, 0.03);
 }
 
 .member-avatar {
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background: rgba(99, 102, 241, 0.15);
-  border: 1px solid rgba(99, 102, 241, 0.25);
+  background: rgba(25, 136, 44, 0.15);
+  border: 1px solid rgba(25, 136, 44, 0.25);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1202,7 +1202,7 @@ onMounted(() => {
 
 .form-input:focus {
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.25);
+  box-shadow: 0 0 0 2px rgba(25, 136, 44, 0.25);
 }
 
 .form-textarea {

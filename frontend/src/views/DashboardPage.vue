@@ -397,13 +397,13 @@ onMounted(async () => {
 
 /* Card color modifiers */
 .stat-card.indigo .stat-icon-wrapper {
-  background: rgba(99, 102, 241, 0.1);
+  background: rgba(25, 136, 44, 0.1);
   color: var(--color-primary);
-  border: 1px solid rgba(99, 102, 241, 0.2);
+  border: 1px solid rgba(25, 136, 44, 0.2);
 }
 .stat-card.indigo:hover {
-  border-color: rgba(99, 102, 241, 0.3);
-  box-shadow: 0 10px 20px -5px rgba(99, 102, 241, 0.15);
+  border-color: rgba(25, 136, 44, 0.3);
+  box-shadow: 0 10px 20px -5px rgba(25, 136, 44, 0.15);
 }
 
 .stat-card.emerald .stat-icon-wrapper {
@@ -427,13 +427,13 @@ onMounted(async () => {
 }
 
 .stat-card.accent .stat-icon-wrapper {
-  background: rgba(139, 92, 246, 0.1);
+  background: rgba(44, 103, 205, 0.1);
   color: var(--color-secondary);
-  border: 1px solid rgba(139, 92, 246, 0.2);
+  border: 1px solid rgba(44, 103, 205, 0.2);
 }
 .stat-card.accent:hover {
-  border-color: rgba(139, 92, 246, 0.3);
-  box-shadow: 0 10px 20px -5px rgba(139, 92, 246, 0.15);
+  border-color: rgba(44, 103, 205, 0.3);
+  box-shadow: 0 10px 20px -5px rgba(44, 103, 205, 0.15);
 }
 
 .dashboard-content {

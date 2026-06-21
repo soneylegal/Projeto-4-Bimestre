@@ -186,7 +186,7 @@ const handleLogout = async () => {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--bg-secondary);
   border: 1px solid var(--border-glass);
   border-radius: var(--radius-md);
   padding: 0.4rem 0.75rem;
@@ -197,7 +197,7 @@ const handleLogout = async () => {
 
 .header-search:focus-within {
   border-color: var(--color-primary);
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--bg-tertiary);
 }
 
 .search-icon {
