@@ -8,6 +8,11 @@ const ProjectsPage = () => import('../views/ProjectsPage.vue')
 const ProjectDetailPage = () => import('../views/ProjectDetailPage.vue')
 const SubmissionsPage = () => import('../views/SubmissionsPage.vue')
 const MainLayout = () => import('../layouts/MainLayout.vue')
+const UsersPage = () => import('../views/admin/UsersPage.vue')
+const AuditLogPage = () => import('../views/admin/AuditLogPage.vue')
+const SettingsPage = () => import('../views/admin/SettingsPage.vue')
+const MyProjectsPage = () => import('../views/student/MyProjectsPage.vue')
+const PendingEvaluationsPage = () => import('../views/evaluator/PendingEvaluationsPage.vue')
 
 const routes = [
   {
@@ -60,6 +65,51 @@ const routes = [
           title: 'Submissões | IFAL Projetos',
           description: 'Histórico de submissões e entregas de arquivos do projeto acadêmico.'
         }
+      },
+      {
+        path: 'admin',
+        component: () => import('../layouts/AdminLayout.vue'),
+        meta: { role: 'admin', title: 'Administração | IFAL Projetos' },
+        children: [
+          {
+            path: '',
+            name: 'AdminUsers',
+            component: UsersPage,
+            meta: { title: 'Usuários | IFAL Projetos' }
+          },
+          {
+            path: 'logs',
+            name: 'AdminLogs',
+            component: AuditLogPage,
+            meta: { title: 'Auditoria | IFAL Projetos' }
+          },
+          {
+            path: 'settings',
+            name: 'AdminSettings',
+            component: SettingsPage,
+            meta: { title: 'Configurações | IFAL Projetos' }
+          }
+        ]
+      },
+      {
+        path: 'meus-projetos',
+        name: 'MyProjects',
+        component: MyProjectsPage,
+        meta: {
+          role: 'student',
+          title: 'Meus Projetos | IFAL Projetos',
+          description: 'Acompanhe seus projetos e entregas acadêmicas.'
+        }
+      },
+      {
+        path: 'pendentes',
+        name: 'PendingEvaluations',
+        component: PendingEvaluationsPage,
+        meta: {
+          role: ['advisor', 'coordinator', 'admin'],
+          title: 'Avaliações Pendentes | IFAL Projetos',
+          description: 'Gerencie as submissões pendentes de avaliação.'
+        }
       }
     ]
   },
@@ -74,10 +124,16 @@ const router = createRouter({
   routes
 })
 
+const roleRoots = {
+  admin: '/admin',
+  coordinator: '/',
+  advisor: '/',
+  student: '/meus-projetos'
+}
+
 router.beforeEach(async (to, from, next) => {
   const authStore = useAuthStore()
   
-  // If store is in initial loading state, fetch user status once
   if (authStore.loading) {
     await authStore.fetchUser()
   }
@@ -86,11 +142,32 @@ router.beforeEach(async (to, from, next) => {
   
   if (requiresAuth && !authStore.isAuthenticated) {
     next('/login')
-  } else if (to.path === '/login' && authStore.isAuthenticated) {
-    next('/')
-  } else {
-    next()
+    return
   }
+  
+  if (to.path === '/login' && authStore.isAuthenticated) {
+    next(roleRoots[authStore.role] || '/')
+    return
+  }
+
+  if (to.path === '/' && authStore.isAuthenticated) {
+    const target = roleRoots[authStore.role]
+    if (target !== '/') {
+      next(target)
+      return
+    }
+  }
+
+  const requiredRole = to.meta.role
+  if (requiredRole) {
+    const roles = Array.isArray(requiredRole) ? requiredRole : [requiredRole]
+    if (!roles.includes(authStore.role)) {
+      next(roleRoots[authStore.role] || '/')
+      return
+    }
+  }
+
+  next()
 })
 
 export default router
