@@ -563,7 +563,7 @@ function statusLabel(s) {
 
 /* ── Feedback do orientador ───────────────────────────────────────────────── */
 .evaluation-box {
-  background: rgba(99, 102, 241, 0.04);
+  background: rgba(25, 136, 44, 0.04);
   border-left: 3px solid var(--color-primary);
   padding: 0.875rem 1rem;
   border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
@@ -632,7 +632,7 @@ function statusLabel(s) {
 }
 .upload-zone:hover, .upload-zone.has-file {
   border-color: var(--color-primary);
-  background: rgba(99, 102, 241, 0.03);
+  background: rgba(25, 136, 44, 0.03);
 }
 .upload-icon { width: 30px; height: 30px; color: var(--text-muted); margin-bottom: 0.25rem; }
 .upload-text { font-size: 0.875rem; font-weight: 600; color: var(--text-primary); }

@@ -1,44 +1,44 @@
 :root {
-  /* Color Palette (Deep Ocean & Slate) */
-  --bg-primary: #0b0f19;
-  --bg-secondary: #161d30;
-  --bg-tertiary: #1f2a45;
-  --bg-glass: rgba(22, 29, 48, 0.7);
-  --border-glass: rgba(255, 255, 255, 0.08);
-  
+  /* Color Palette (IFAL Light) */
+  --bg-primary: #ffffff;
+  --bg-secondary: #f5f7f5;
+  --bg-tertiary: #e8ede8;
+  --bg-glass: rgba(255, 255, 255, 0.85);
+  --border-glass: rgba(0, 0, 0, 0.06);
+
   /* Brand Colors */
-  --color-primary: #6366f1;       /* Indigo */
-  --color-primary-hover: #4f46e5;
-  --color-secondary: #8b5cf6;     /* Violet */
-  --color-secondary-hover: #7c3aed;
-  --color-accent: #10b981;        /* Emerald */
-  --color-accent-hover: #059669;
-  
+  --color-primary: #19882c;       /* Verde IFAL */
+  --color-primary-hover: #0e6b21;
+  --color-secondary: #2c67cd;     /* Azul IFAL */
+  --color-secondary-hover: #1e4fa3;
+  --color-accent: #ffb400;        /* Dourado IFAL */
+  --color-accent-hover: #e0a000;
+
   /* Feedback Colors */
   --color-success: #10b981;
   --color-warning: #f59e0b;
   --color-danger: #ef4444;
-  --color-info: #3b82f6;
+  --color-info: #2c67cd;
 
   /* Text Colors */
-  --text-primary: #f3f4f6;
-  --text-secondary: #9ca3af;
-  --text-muted: #6b7280;
-  --text-inverse: #0b0f19;
-  
+  --text-primary: #1a1a2e;
+  --text-secondary: #4a5568;
+  --text-muted: #9ca3af;
+  --text-inverse: #ffffff;
+
   /* Gradients */
-  --gradient-primary: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-  --gradient-dark: linear-gradient(180deg, #0b0f19 0%, #161d30 100%);
-  --gradient-glass: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(139, 92, 246, 0.05) 100%);
+  --gradient-primary: linear-gradient(135deg, #19882c 0%, #025310 100%);
+  --gradient-dark: linear-gradient(180deg, #025310 0%, #00420c 100%);
+  --gradient-glass: linear-gradient(135deg, rgba(25, 136, 44, 0.08) 0%, rgba(2, 83, 16, 0.04) 100%);
 
   /* Typography */
   --font-sans: 'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-  
+
   /* Shadows */
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.15);
-  --shadow-glass: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-glass: 0 8px 32px 0 rgba(0, 0, 0, 0.08);
 
   /* Layout & Spacing */
   --sidebar-width: 260px;

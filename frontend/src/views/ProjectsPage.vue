@@ -363,8 +363,8 @@ onMounted(() => {
 
 .project-card:hover {
   transform: translateY(-4px);
-  border-color: rgba(99, 102, 241, 0.2);
-  box-shadow: 0 12px 24px -10px rgba(99, 102, 241, 0.15);
+  border-color: rgba(25, 136, 44, 0.2);
+  box-shadow: 0 12px 24px -10px rgba(25, 136, 44, 0.15);
 }
 
 .card-header {
@@ -379,7 +379,7 @@ onMounted(() => {
   font-weight: 600;
   text-transform: uppercase;
   color: var(--color-primary);
-  background: rgba(99, 102, 241, 0.1);
+  background: rgba(25, 136, 44, 0.1);
   padding: 0.2rem 0.6rem;
   border-radius: 4px;
 }
@@ -598,7 +598,7 @@ onMounted(() => {
 
 .form-input:focus {
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.25);
+  box-shadow: 0 0 0 2px rgba(25, 136, 44, 0.25);
 }
 
 .form-textarea {

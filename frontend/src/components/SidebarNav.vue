@@ -52,19 +52,14 @@ const handleNavClick = () => {
 <template>
   <aside class="sidebar" :class="{ 'sidebar-open': open }">
     <div class="sidebar-brand">
-      <div class="brand-logo">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="logo-icon">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-        </svg>
-      </div>
-      <span class="brand-text">IFAL <span class="text-gradient">Projetos</span></span>
+      <img src="/src/assets/logo-ifal.png" alt="IFAL" class="brand-logo" />
     </div>
-    
+
     <nav class="sidebar-menu">
-      <router-link 
-        v-for="item in menuItems" 
-        :key="item.name" 
-        :to="item.path" 
+      <router-link
+        v-for="item in menuItems"
+        :key="item.name"
+        :to="item.path"
         class="menu-item"
         :class="{ active: isActive(item.path) }"
         @click="handleNavClick"
@@ -102,33 +97,15 @@ const handleNavClick = () => {
   height: var(--header-height);
   display: flex;
   align-items: center;
-  padding: 0 1.5rem;
-  gap: 0.75rem;
+  justify-content: center;
+  padding: 0 1rem;
   border-bottom: 1px solid var(--border-glass);
 }
 
 .brand-logo {
-  width: 36px;
-  height: 36px;
-  background: var(--gradient-primary);
-  border-radius: var(--radius-sm);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.logo-icon {
-  width: 20px;
-  height: 20px;
-  color: #ffffff;
-}
-
-.brand-text {
-  font-family: 'Outfit', sans-serif;
-  font-size: 1.25rem;
-  font-weight: 800;
-  letter-spacing: -0.025em;
-  color: var(--text-primary);
+  max-height: 48px;
+  width: auto;
+  object-fit: contain;
 }
 
 .sidebar-menu {
@@ -152,7 +129,7 @@ const handleNavClick = () => {
 }
 
 .menu-item:hover {
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--bg-tertiary);
   color: var(--text-primary);
   transform: translateX(4px);
 }
@@ -187,27 +164,27 @@ const handleNavClick = () => {
 }
 
 .user-role-badge.student {
-  background: rgba(59, 130, 246, 0.1);
+  background: rgba(44, 103, 205, 0.08);
   color: var(--color-info);
-  border: 1px solid rgba(59, 130, 246, 0.2);
+  border: 1px solid rgba(44, 103, 205, 0.15);
 }
 
 .user-role-badge.advisor {
-  background: rgba(16, 185, 129, 0.1);
+  background: rgba(16, 185, 129, 0.08);
   color: var(--color-success);
-  border: 1px solid rgba(16, 185, 129, 0.2);
+  border: 1px solid rgba(16, 185, 129, 0.15);
 }
 
 .user-role-badge.coordinator {
-  background: rgba(139, 92, 246, 0.1);
-  color: var(--color-secondary);
-  border: 1px solid rgba(139, 92, 246, 0.2);
+  background: rgba(255, 180, 0, 0.1);
+  color: var(--color-accent);
+  border: 1px solid rgba(255, 180, 0, 0.2);
 }
 
 .user-role-badge.admin {
-  background: rgba(239, 68, 68, 0.1);
+  background: rgba(239, 68, 68, 0.08);
   color: var(--color-danger);
-  border: 1px solid rgba(239, 68, 68, 0.2);
+  border: 1px solid rgba(239, 68, 68, 0.15);
 }
 
 @media (max-width: 767px) {
