@@ -33,11 +33,27 @@ export function apiUrl(path) {
 export async function apiFetch(path, options = {}) {
   const url = apiUrl(path)
 
-  // Garante que credentials sejam enviadas para manter cookies HttpOnly
   const defaultOptions = {
     credentials: 'include',
     ...options,
   }
 
   return fetch(url, defaultOptions)
+}
+
+export async function apiFetchWithTimeout(path, options = {}, timeoutMs = 10000) {
+  const controller = new AbortController()
+  const timeoutId = setTimeout(() => controller.abort(), timeoutMs)
+
+  try {
+    const url = apiUrl(path)
+    const defaultOptions = {
+      credentials: 'include',
+      signal: controller.signal,
+      ...options,
+    }
+    return await fetch(url, defaultOptions)
+  } finally {
+    clearTimeout(timeoutId)
+  }
 }

@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { apiFetch, apiUrl } from '@/utils/api'
+import { apiFetch, apiFetchWithTimeout, apiUrl } from '@/utils/api'
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
@@ -7,17 +7,33 @@ export const useAuthStore = defineStore('auth', {
     isAuthenticated: false,
     loading: true,
   }),
+
+  getters: {
+    role: (state) => state.user?.role || null,
+    isStudent: (state) => state.user?.role === 'student',
+    isAdvisor: (state) => state.user?.role === 'advisor',
+    isCoordinator: (state) => state.user?.role === 'coordinator',
+    isAdmin: (state) => state.user?.role === 'admin',
+    can: (state) => {
+      const hierarchy = ['student', 'advisor', 'coordinator', 'admin']
+      return (minRole) => {
+        const userIdx = hierarchy.indexOf(state.user?.role)
+        const requiredIdx = hierarchy.indexOf(minRole)
+        return userIdx >= requiredIdx
+      }
+    }
+  },
   
   actions: {
     async fetchUser() {
       this.loading = true
       try {
-        const response = await apiFetch('/api/auth/me', {
+        const response = await apiFetchWithTimeout('/api/auth/me', {
           method: 'GET',
           headers: {
             'Accept': 'application/json',
           }
-        })
+        }, 15000)
         
         if (response.ok) {
           const data = await response.json()
