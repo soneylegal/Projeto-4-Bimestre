@@ -71,7 +71,7 @@ function createTestRouter() {
       return
     }
 
-    if (to.path === '/' && authStore.isAuthenticated) {
+    if (to.path === '/' && authStore.isAuthenticated && from.path === '/login') {
       const target = roleRoots[authStore.role]
       if (target !== '/') {
         next(target)
@@ -105,47 +105,36 @@ describe('router beforeEach guard', () => {
     expect(router.currentRoute.value.path).toBe('/login')
   })
 
-  it('redirects student from / to /meus-projetos', async () => {
-    const store = useAuthStore()
-    store.user = { role: 'student' }
-    store.isAuthenticated = true
-    store.loading = false
-
-    const router = createTestRouter()
-    await router.push('/')
-    expect(router.currentRoute.value.path).toBe('/meus-projetos')
-  })
-
-  it('redirects admin from / to /admin', async () => {
-    const store = useAuthStore()
-    store.user = { role: 'admin' }
-    store.isAuthenticated = true
-    store.loading = false
-
-    const router = createTestRouter()
-    await router.push('/')
-    expect(router.currentRoute.value.path).toBe('/admin')
-  })
-
-  it('redirects coordinator from / to /', async () => {
+  it('stays at / for coordinator when clicking Dashboard', async () => {
     const store = useAuthStore()
     store.user = { role: 'coordinator' }
     store.isAuthenticated = true
     store.loading = false
 
     const router = createTestRouter()
-    await router.push('/')
+    await router.replace('/')
     expect(router.currentRoute.value.path).toBe('/')
   })
 
-  it('redirects advisor from / to /', async () => {
+  it('stays at / for admin when clicking Dashboard', async () => {
     const store = useAuthStore()
-    store.user = { role: 'advisor' }
+    store.user = { role: 'admin' }
     store.isAuthenticated = true
     store.loading = false
 
     const router = createTestRouter()
-    await router.push('/')
+    await router.replace('/')
+    expect(router.currentRoute.value.path).toBe('/')
+  })
+
+  it('stays at / for student when clicking Dashboard', async () => {
+    const store = useAuthStore()
+    store.user = { role: 'student' }
+    store.isAuthenticated = true
+    store.loading = false
+
+    const router = createTestRouter()
+    await router.replace('/')
     expect(router.currentRoute.value.path).toBe('/')
   })
 
