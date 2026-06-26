@@ -15,12 +15,13 @@ FRONTEND_URL = os.getenv("FRONTEND_URL", "")
 IS_PRODUCTION = os.getenv("RENDER", "") == "true" or FRONTEND_URL.startswith("https")
 from ..database import get_db
 from ..models import User, RefreshToken
-from ..schemas import UserResponse
+from ..schemas import UserCreate, UserProfileUpdate, UserResponse, UserUpdate
 from ..auth_utils import (
     create_access_token, 
     create_refresh_token, 
     log_auth_event, 
-    get_current_user
+    get_current_user,
+    require_role
 )
 
 router = APIRouter(prefix="/api/auth", tags=["auth"])
@@ -246,6 +247,24 @@ async def me(current_user: User = Depends(get_current_user)):
     """Retorna dados do usuário atualmente logado."""
     return current_user
 
+@router.put("/me", response_model=UserResponse)
+async def update_profile(
+    profile_in: UserProfileUpdate,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """Atualiza dados do perfil do usuário logado."""
+    if profile_in.name is not None:
+        current_user.name = profile_in.name
+    if profile_in.email is not None:
+        current_user.email = profile_in.email
+    if profile_in.avatar_url is not None:
+        current_user.avatar_url = profile_in.avatar_url
+
+    await db.commit()
+    await db.refresh(current_user)
+    return current_user
+
 @router.get("/users", response_model=list[UserResponse])
 async def list_users(role: str | None = None, db: AsyncSession = Depends(get_db), current_user: User = Depends(get_current_user)):
     """Retorna a lista de usuários ativos, opcionalmente filtrada por papel (role)."""
@@ -254,6 +273,99 @@ async def list_users(role: str | None = None, db: AsyncSession = Depends(get_db)
         query = query.where(User.role == role)
     result = await db.execute(query)
     return result.scalars().all()
+
+@router.post("/users", response_model=UserResponse, status_code=201)
+async def create_user(
+    user_in: UserCreate,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(require_role(["admin"]))
+):
+    """Cria um novo usuário. Apenas administradores."""
+    existing = await db.execute(
+        select(User).where((User.email == user_in.email) | (User.suap_id == user_in.suap_id))
+    )
+    if existing.scalars().first():
+        raise HTTPException(status_code=400, detail="Já existe um usuário com este email ou SUAP ID.")
+
+    db_user = User(
+        suap_id=user_in.suap_id,
+        name=user_in.name,
+        email=user_in.email,
+        role=user_in.role,
+        avatar_url=user_in.avatar_url,
+        is_active=True
+    )
+    db.add(db_user)
+    await db.commit()
+    await db.refresh(db_user)
+    return db_user
+
+
+@router.put("/users/{user_id}", response_model=UserResponse)
+async def update_user(
+    user_id: uuid.UUID,
+    user_in: UserUpdate,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(require_role(["admin"]))
+):
+    """Atualiza dados de um usuário. Apenas administradores."""
+    result = await db.execute(select(User).where(User.id == user_id))
+    db_user = result.scalars().first()
+    if not db_user:
+        raise HTTPException(status_code=404, detail="Usuário não encontrado.")
+
+    if user_in.name is not None:
+        db_user.name = user_in.name
+    if user_in.email is not None:
+        db_user.email = user_in.email
+    if user_in.role is not None:
+        db_user.role = user_in.role
+    if user_in.is_active is not None:
+        db_user.is_active = user_in.is_active
+
+    await db.commit()
+    await db.refresh(db_user)
+    return db_user
+
+
+@router.patch("/users/{user_id}/toggle-active", response_model=UserResponse)
+async def toggle_user_active(
+    user_id: uuid.UUID,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(require_role(["admin"]))
+):
+    """Ativa/desativa um usuário. Apenas administradores."""
+    result = await db.execute(select(User).where(User.id == user_id))
+    db_user = result.scalars().first()
+    if not db_user:
+        raise HTTPException(status_code=404, detail="Usuário não encontrado.")
+    if db_user.id == current_user.id:
+        raise HTTPException(status_code=400, detail="Você não pode desativar sua própria conta.")
+
+    db_user.is_active = not db_user.is_active
+    await db.commit()
+    await db.refresh(db_user)
+    return db_user
+
+
+@router.delete("/users/{user_id}", status_code=204)
+async def delete_user(
+    user_id: uuid.UUID,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(require_role(["admin"]))
+):
+    """Remove um usuário do sistema. Apenas administradores."""
+    if user_id == current_user.id:
+        raise HTTPException(status_code=400, detail="Você não pode remover sua própria conta.")
+
+    result = await db.execute(select(User).where(User.id == user_id))
+    db_user = result.scalars().first()
+    if not db_user:
+        raise HTTPException(status_code=404, detail="Usuário não encontrado.")
+
+    await db.delete(db_user)
+    await db.commit()
+
 
 @router.post("/refresh")
 async def refresh(request: Request, response: Response, db: AsyncSession = Depends(get_db)):
