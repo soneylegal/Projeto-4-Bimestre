@@ -4,6 +4,7 @@ import { useAuthStore } from '../store/auth'
 import { useHead } from '@unhead/vue'
 import { useRoute } from 'vue-router'
 import SkeletonCard from '../components/SkeletonCard.vue'
+import DashboardCharts from '../components/DashboardCharts.vue'
 import { apiFetchWithTimeout } from '../utils/api'
 
 const route = useRoute()
@@ -62,6 +63,14 @@ const totalUsersCount = ref(0)
 const totalStudentsCount = ref(0)
 const totalAdvisorsCount = ref(0)
 const projectsByStatus = ref({})
+
+const platformUpdates = ref([
+  { id: 1, date: 'Jun 2026', text: 'Nova interface com a identidade visual do IFAL' },
+  { id: 2, date: 'Mai 2026', text: 'Painel de avaliações para orientadores' },
+  { id: 3, date: 'Abr 2026', text: 'Sistema de submissão de arquivos' },
+  { id: 4, date: 'Mar 2026', text: 'Quadro Kanban para gerenciamento de tarefas' },
+  { id: 5, date: 'Fev 2026', text: 'Autenticação via SUAP' },
+])
 
 // Dynamic metrics depending on user role and real data
 const stats = computed(() => {
@@ -273,6 +282,13 @@ onMounted(async () => {
         </div>
       </div>
 
+      <!-- Charts Section -->
+      <DashboardCharts
+        :projects="projects"
+        :tasks="tasks"
+        :submissions="submissions"
+      />
+
       <!-- Dashboard Content Sections -->
       <div class="dashboard-content">
         <div class="content-card glass-card">
@@ -320,6 +336,17 @@ onMounted(async () => {
               </div>
             </div>
           </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Atualizações da Plataforma -->
+    <div class="updates-section glass-card">
+      <h3 class="section-title">Atualizações da Plataforma</h3>
+      <div class="updates-list">
+        <div v-for="upd in platformUpdates" :key="upd.id" class="update-item">
+          <span class="update-date">{{ upd.date }}</span>
+          <p class="update-text">{{ upd.text }}</p>
         </div>
       </div>
     </div>
@@ -659,5 +686,34 @@ onMounted(async () => {
 .empty-text {
   color: var(--text-muted);
   font-size: 0.875rem;
+}
+
+.updates-section {
+  padding: 1.75rem;
+}
+
+.updates-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.update-item {
+  display: flex;
+  gap: 1rem;
+  align-items: baseline;
+}
+
+.update-date {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  white-space: nowrap;
+  min-width: 70px;
+}
+
+.update-text {
+  font-size: 0.875rem;
+  color: var(--text-primary);
 }
 </style>
