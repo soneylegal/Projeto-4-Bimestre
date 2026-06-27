@@ -12,6 +12,17 @@ class UserBase(BaseModel):
 class UserCreate(UserBase):
     suap_id: str
 
+class UserUpdate(BaseModel):
+    name: Optional[str] = None
+    email: Optional[EmailStr] = None
+    role: Optional[Literal['admin', 'coordinator', 'advisor', 'student']] = None
+    is_active: Optional[bool] = None
+
+class UserProfileUpdate(BaseModel):
+    name: Optional[str] = None
+    email: Optional[EmailStr] = None
+    avatar_url: Optional[str] = None
+
 class UserResponse(UserBase):
     id: UUID
     suap_id: str

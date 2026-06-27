@@ -107,6 +107,28 @@ class Submission(Base):
     project = relationship("Project", back_populates="submissions")
     uploader = relationship("User", foreign_keys=[uploader_id], backref="submissions")
 
+class Message(Base):
+    __tablename__ = "messages"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    project_id = Column(UUID(as_uuid=True), ForeignKey("projects.id", ondelete="CASCADE"), nullable=False, index=True)
+    sender_id = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="SET NULL"), nullable=True, index=True)
+    content = Column(Text, nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    project = relationship("Project", foreign_keys=[project_id])
+    sender = relationship("User", foreign_keys=[sender_id])
+
+class AcademicEvent(Base):
+    __tablename__ = "academic_events"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    title = Column(String(255), nullable=False)
+    description = Column(String(1000), nullable=True)
+    event_date = Column(DateTime, nullable=False, index=True)
+    event_type = Column(String(20), nullable=False, default="academic")  # 'academic', 'deadline', 'holiday'
+    created_at = Column(DateTime, default=datetime.utcnow)
+
 class AuditLog(Base):
     __tablename__ = "audit_logs"
 

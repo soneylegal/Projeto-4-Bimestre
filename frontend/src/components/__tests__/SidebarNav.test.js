@@ -35,10 +35,10 @@ describe('SidebarNav', () => {
     setActivePinia(pinia)
   })
 
-  it('admin sees 4 menu items (Projetos, Administração, Relatórios, Avaliações)', () => {
+  it('admin sees 5 menu items (Dashboard, Projetos, Administração, Relatórios, Avaliações)', () => {
     const wrapper = createWrapper('admin', pinia)
     const items = wrapper.findAll('.menu-item')
-    expect(items.length).toBe(4)
+    expect(items.length).toBe(5)
   })
 
   it('coordinator sees 4 menu items (Dashboard, Projetos, Relatórios, Avaliações)', () => {
@@ -53,10 +53,24 @@ describe('SidebarNav', () => {
     expect(items.length).toBe(3)
   })
 
-  it('student sees 2 menu items (Projetos, Meus Projetos)', () => {
+  it('student sees 3 menu items (Dashboard, Projetos, Meus Projetos)', () => {
     const wrapper = createWrapper('student', pinia)
     const items = wrapper.findAll('.menu-item')
-    expect(items.length).toBe(2)
+    expect(items.length).toBe(3)
+  })
+
+  it('admin has Dashboard link', () => {
+    const wrapper = createWrapper('admin', pinia)
+    const links = wrapper.findAll('a')
+    const texts = links.map(l => l.text())
+    expect(texts).toContain('Dashboard')
+  })
+
+  it('student has Dashboard link', () => {
+    const wrapper = createWrapper('student', pinia)
+    const links = wrapper.findAll('a')
+    const texts = links.map(l => l.text())
+    expect(texts).toContain('Dashboard')
   })
 
   it('admin has Administração link', () => {
@@ -64,13 +78,6 @@ describe('SidebarNav', () => {
     const links = wrapper.findAll('a')
     const texts = links.map(l => l.text())
     expect(texts).toContain('Administração')
-  })
-
-  it('student does not have Dashboard link', () => {
-    const wrapper = createWrapper('student', pinia)
-    const links = wrapper.findAll('a')
-    const texts = links.map(l => l.text())
-    expect(texts).not.toContain('Dashboard')
   })
 
   it('student has Meus Projetos link', () => {

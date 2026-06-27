@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from .database import engine, Base
-from .routers import auth, projects, tasks, submissions, reports
+from .routers import auth, projects, tasks, submissions, reports, calendar, notifications, chat
 from .config import settings
 
 app = FastAPI(
@@ -25,6 +25,9 @@ app.include_router(projects.router)
 app.include_router(tasks.router)
 app.include_router(submissions.router)
 app.include_router(reports.router)
+app.include_router(calendar.router)
+app.include_router(notifications.router)
+app.include_router(chat.router)
 
 @app.on_event("startup")
 async def startup():

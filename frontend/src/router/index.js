@@ -14,6 +14,8 @@ const SettingsPage = () => import('../views/admin/SettingsPage.vue')
 const MyProjectsPage = () => import('../views/student/MyProjectsPage.vue')
 const PendingEvaluationsPage = () => import('../views/evaluator/PendingEvaluationsPage.vue')
 const ReportsPage = () => import('../views/reports/ReportsPage.vue')
+const ProfilePage = () => import('../views/ProfilePage.vue')
+const CalendarPage = () => import('../views/CalendarPage.vue')
 
 const routes = [
   {
@@ -121,6 +123,22 @@ const routes = [
           title: 'Relatórios | IFAL Projetos',
           description: 'Relatórios institucionais e métricas acadêmicas.'
         }
+      },
+      {
+        path: 'profile',
+        name: 'Profile',
+        component: ProfilePage,
+        meta: {
+          title: 'Meu Perfil | IFAL Projetos'
+        }
+      },
+      {
+        path: 'calendario',
+        name: 'Calendar',
+        component: CalendarPage,
+        meta: {
+          title: 'Calendário | IFAL Projetos'
+        }
       }
     ]
   },
@@ -161,7 +179,7 @@ router.beforeEach(async (to, from, next) => {
     return
   }
 
-  if (to.path === '/' && authStore.isAuthenticated) {
+  if (to.path === '/' && authStore.isAuthenticated && from.path === '/login') {
     const target = roleRoots[authStore.role]
     if (target !== '/') {
       next(target)

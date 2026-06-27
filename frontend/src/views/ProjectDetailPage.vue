@@ -5,6 +5,7 @@ import { useAuthStore } from '../store/auth'
 import { apiFetch } from '@/utils/api'
 import { useNotificationStore } from '../store/notifications'
 import SkeletonCard from '../components/SkeletonCard.vue'
+import ChatWidget from '../components/ChatWidget.vue'
 import { useHead } from '@unhead/vue'
 
 const route = useRoute()
@@ -543,6 +544,11 @@ onMounted(() => {
           </div>
         </div>
       </div>
+    </div>
+
+    <!-- Chat Widget -->
+    <div v-if="project && isParticipant" class="chat-section">
+      <ChatWidget :projectId="projectId" />
     </div>
 
     <!-- Modal Criar/Editar Tarefa -->

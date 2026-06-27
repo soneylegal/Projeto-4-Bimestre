@@ -68,7 +68,7 @@ const handleLogout = async () => {
     </div>
     
     <div class="header-right" v-if="user">
-      <div class="user-profile">
+      <router-link to="/profile" class="user-profile">
         <div class="user-info">
           <span class="user-name">{{ user.name }}</span>
           <span class="user-email">{{ user.email }}</span>
@@ -85,7 +85,7 @@ const handleLogout = async () => {
             {{ userInitials }}
           </div>
         </div>
-      </div>
+      </router-link>
       
       <button class="logout-btn" @click="handleLogout" title="Sair da Conta">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="logout-icon">
